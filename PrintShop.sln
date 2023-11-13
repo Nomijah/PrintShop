@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.6.33723.286
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PrintShopAPI", "PrintShopAPI\PrintShopAPI.csproj", "{CBC08980-763B-4730-92EB-D83201BDB1BF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PrintShop.Models", "PrintShop.Models\PrintShop.Models.csproj", "{7A385B68-451C-4B45-8677-72C2EAAF9241}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{CBC08980-763B-4730-92EB-D83201BDB1BF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CBC08980-763B-4730-92EB-D83201BDB1BF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CBC08980-763B-4730-92EB-D83201BDB1BF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CBC08980-763B-4730-92EB-D83201BDB1BF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7A385B68-451C-4B45-8677-72C2EAAF9241}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7A385B68-451C-4B45-8677-72C2EAAF9241}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7A385B68-451C-4B45-8677-72C2EAAF9241}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7A385B68-451C-4B45-8677-72C2EAAF9241}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {695CDDE2-8FE0-4423-8C35-616B28176B59}
+	EndGlobalSection
+EndGlobal
