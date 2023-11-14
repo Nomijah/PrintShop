@@ -20,5 +20,6 @@ namespace PrintShop.Models
         public List<Category>? Categories { get; set; }
         public List<string>? Tags { get; set; }
         public List<Discount>? Discounts { get; set; }
+        public List<Product>? Products { get; set; }
     }
 }

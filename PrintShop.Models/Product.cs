@@ -14,7 +14,7 @@ namespace PrintShop.Models
         public int Id { get; set; }
         public string SKU { get; set; } = String.Empty;
         public string Description { get; set; } = String.Empty;
-        public string? PictureId { get; set; }
+        public int? PictureId { get; set; }
         public Picture? Picture { get; set; }
         public int? VariantId { get; set; }
         public Variant? Variant { get; set; }
