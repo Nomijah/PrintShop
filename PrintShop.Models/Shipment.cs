@@ -16,8 +16,8 @@ namespace PrintShop.Models
         public string ZipCode { get; set; } = String.Empty;
         public string Country { get; set; } = String.Empty;
         public int OrderId { get; set; }
-        public Order Order { get; set; }
+        public Order? Order { get; set; }
         public string UserId { get; set; } = String.Empty;
-        public User User { get; set; }
+        public User? User { get; set; }
     }
 }

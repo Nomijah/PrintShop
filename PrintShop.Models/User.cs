@@ -5,7 +5,7 @@ namespace PrintShop.Models
 {
     public class User : IdentityUser
     {
-        public Cart Cart { get; set; }
+        public Cart? Cart { get; set; }
         public List<Order>? Orders { get; set; }
         public List<Favorite>? Favorites { get; set; }
         public List<Payment>? Payments { get; set; }
