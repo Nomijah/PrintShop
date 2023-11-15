@@ -5,10 +5,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PrintShop.DAL.Interface
+namespace PrintShop.DAL.Repositories.Interfaces
 {
-    internal interface IProductRepo
+    public interface IUserRepo
     {
-        Task<IEnumerable<Product>> GetAllAsync();
+        Task<User> GetByIdAsync(string id);
     }
 }
