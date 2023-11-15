@@ -1,5 +1,5 @@
 ﻿using PrintShop.DAL.Interfaces;
-using PrintShop.Models;
+using PrintShop.GlobalData.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;

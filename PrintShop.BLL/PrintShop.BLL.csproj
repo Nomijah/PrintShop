@@ -8,7 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\PrintShop.DAL\PrintShop.DAL.csproj" />
-    <ProjectReference Include="..\PrintShop.Models\PrintShop.Models.csproj" />
+    <ProjectReference Include="..\PrintShop.Models\PrintShop.GlobalData.csproj" />
   </ItemGroup>
 
 </Project>

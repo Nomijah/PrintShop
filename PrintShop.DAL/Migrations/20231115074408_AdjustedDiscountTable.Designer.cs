@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using PrintShop.DAL.Context;
@@ -12,9 +13,11 @@ using PrintShop.DAL.Context;
 namespace PrintShop.DAL.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231115074408_AdjustedDiscountTable")]
+    partial class AdjustedDiscountTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -51,14 +54,14 @@ namespace PrintShop.DAL.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "86d78f5c-d470-430a-824f-4a2d8687a8d9",
+                            Id = "ceea22f0-cf86-47cd-bb16-f04ada328c4b",
                             ConcurrencyStamp = "1",
                             Name = "Admin",
                             NormalizedName = "Admin"
                         },
                         new
                         {
-                            Id = "5ca9260b-d6c0-4b76-8e45-6ea11fd69ff4",
+                            Id = "3045b38f-a379-464d-b9f6-5d1ced856bf5",
                             ConcurrencyStamp = "2",
                             Name = "Customer",
                             NormalizedName = "Customer"
@@ -269,13 +272,28 @@ namespace PrintShop.DAL.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<int?>("PictureId")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("ProductId")
+                        .HasColumnType("integer");
+
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<int?>("VariantId")
+                        .HasColumnType("integer");
 
                     b.Property<bool>("isActive")
                         .HasColumnType("boolean");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("PictureId");
+
+                    b.HasIndex("ProductId");
+
+                    b.HasIndex("VariantId");
 
                     b.ToTable("Discounts");
                 });
@@ -303,12 +321,6 @@ namespace PrintShop.DAL.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("DiscountId");
-
-                    b.HasIndex("PictureId");
-
-                    b.HasIndex("ProductId");
-
-                    b.HasIndex("VariantId");
 
                     b.ToTable("DiscountProducts");
                 });
@@ -935,14 +947,8 @@ namespace PrintShop.DAL.Migrations
                         .HasForeignKey("PictureId");
                 });
 
-            modelBuilder.Entity("PrintShop.GlobalData.Models.DiscountProduct", b =>
+            modelBuilder.Entity("PrintShop.GlobalData.Models.Discount", b =>
                 {
-                    b.HasOne("PrintShop.GlobalData.Models.Discount", null)
-                        .WithMany("DiscountProducts")
-                        .HasForeignKey("DiscountId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("PrintShop.GlobalData.Models.Picture", null)
                         .WithMany("Discounts")
                         .HasForeignKey("PictureId");
@@ -954,6 +960,15 @@ namespace PrintShop.DAL.Migrations
                     b.HasOne("PrintShop.GlobalData.Models.Variant", null)
                         .WithMany("Discounts")
                         .HasForeignKey("VariantId");
+                });
+
+            modelBuilder.Entity("PrintShop.GlobalData.Models.DiscountProduct", b =>
+                {
+                    b.HasOne("PrintShop.GlobalData.Models.Discount", null)
+                        .WithMany("DiscountProducts")
+                        .HasForeignKey("DiscountId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("PrintShop.GlobalData.Models.Favorite", b =>

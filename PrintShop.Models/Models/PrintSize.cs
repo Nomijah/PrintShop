@@ -1,4 +1,4 @@
-﻿namespace PrintShop.Models
+﻿namespace PrintShop.GlobalData.Models
 {
     public class PrintSize
     {
@@ -7,7 +7,7 @@
         public int Height { get; set; }
         public int Width { get; set; }
 
-        public PrintSize(int id, int height, int width )
+        public PrintSize(int id, int height, int width)
         {
             Id = id;
             Height = height;

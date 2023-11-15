@@ -5,11 +5,11 @@ VisualStudioVersion = 17.6.33723.286
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PrintShopAPI", "PrintShopAPI\PrintShopAPI.csproj", "{CBC08980-763B-4730-92EB-D83201BDB1BF}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PrintShop.Models", "PrintShop.Models\PrintShop.Models.csproj", "{7A385B68-451C-4B45-8677-72C2EAAF9241}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PrintShop.GlobalData", "PrintShop.Models\PrintShop.GlobalData.csproj", "{7A385B68-451C-4B45-8677-72C2EAAF9241}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PrintShop.BLL", "PrintShop.BLL\PrintShop.BLL.csproj", "{A61E300B-5D4D-455D-A165-CA77617DF6F6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PrintShop.BLL", "PrintShop.BLL\PrintShop.BLL.csproj", "{A61E300B-5D4D-455D-A165-CA77617DF6F6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PrintShop.DAL", "PrintShop.DAL\PrintShop.DAL.csproj", "{84991E66-FFFF-49F8-9E56-FB5BCF87DAFE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PrintShop.DAL", "PrintShop.DAL\PrintShop.DAL.csproj", "{84991E66-FFFF-49F8-9E56-FB5BCF87DAFE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -5,7 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using PrintShop.DAL.Context;
 using PrintShop.DAL.Interfaces;
 using PrintShop.DAL.Repositories;
-using PrintShop.Models;
+using PrintShop.GlobalData.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;

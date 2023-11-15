@@ -1,4 +1,4 @@
-﻿namespace PrintShop.Models
+﻿namespace PrintShop.GlobalData.Models
 {
     public class DiscountProduct
     {

@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using PrintShop.Models;
+using PrintShop.GlobalData.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;

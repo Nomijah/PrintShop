@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
@@ -27,7 +27,7 @@
   <ItemGroup>
     <ProjectReference Include="..\PrintShop.BLL\PrintShop.BLL.csproj" />
     <ProjectReference Include="..\PrintShop.DAL\PrintShop.DAL.csproj" />
-    <ProjectReference Include="..\PrintShop.Models\PrintShop.Models.csproj" />
+    <ProjectReference Include="..\PrintShop.Models\PrintShop.GlobalData.csproj" />
   </ItemGroup>
 
 </Project>
