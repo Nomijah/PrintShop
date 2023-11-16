@@ -23,7 +23,8 @@ namespace PrintShop.DAL
             services.AddDbContext<AppDbContext>(options =>
             options.UseNpgsql(configuration.GetConnectionString("LocalConnection")));
 
-            services.AddScoped<IRepository<Product>, ProductRepo>();
+            services.AddScoped<IRepository<Product>, GeneralRepository<Product>>();
+            services.AddScoped<IUserRepo, UserRepo>();
             services.AddIdentity<User, IdentityRole>()
                 .AddEntityFrameworkStores<AppDbContext>()
                 .AddDefaultTokenProviders();

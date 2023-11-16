@@ -21,6 +21,8 @@ namespace PrintShop.DAL.Context
         {
             base.OnModelCreating(builder);
             builder.Entity<Favorite>().HasKey(f => new { f.PictureId, f.UserId });
+            builder.Entity<UserOrder>().HasKey(c => new { c.UserId, c.OrderId });
+            builder.Entity<Tag>().HasKey(c => new { c.Name });
             SeedData.SeedRoles(builder);
             SeedData.SeedPrintSizes(builder);
             SeedData.SeedMaterials(builder);

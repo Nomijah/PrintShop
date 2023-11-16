@@ -18,7 +18,7 @@ namespace PrintShop.GlobalData.Models
         public decimal BasePrice { get; set; }
         public bool IsActive { get; set; }
         public List<Category>? Categories { get; set; }
-        public List<string>? Tags { get; set; }
+        public List<Tag>? Tags { get; set; }
         public List<DiscountProduct>? Discounts { get; set; }
         public List<Product>? Products { get; set; }
     }
