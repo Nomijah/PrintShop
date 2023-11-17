@@ -1,6 +1,10 @@
 using PrintShop.DAL;
 using PrintShop.BLL;
+using PrintShop.BLL.Validation.UserValidations;
 using Serilog;
+using FluentValidation;
+using PrintShop.GlobalData.Models.DTOs.UserDTOs;
+using PrintShopAPI.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,6 +14,9 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddScoped<IValidator<UserRegisterDto>, UserRegistrationValidator>();
+
+builder.Services.DbServicesDAL(builder.Configuration).DbServicesBLL();
 
 Log.Logger = new LoggerConfiguration()
     .ReadFrom.Configuration(builder.Configuration)
@@ -17,8 +24,7 @@ Log.Logger = new LoggerConfiguration()
 
 builder.Host.UseSerilog();
 
-builder.Services.DbServicesDAL(builder.Configuration).DbServicesBLL();
-                
+
 
 var app = builder.Build();
 
@@ -34,6 +40,8 @@ app.UseSerilogRequestLogging();
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
+
+app.UseMiddleware<GlobalExceptionHandlingMiddleware>();
 
 app.MapControllers();
 
