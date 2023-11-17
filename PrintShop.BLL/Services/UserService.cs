@@ -23,18 +23,21 @@ namespace PrintShop.BLL.Services
         private readonly IConfiguration _configuration;
         private readonly IValidator<UserRegisterDto> _userValidator;
 
-        public UserService(IUserRepo userRepo, UserManager<User> userManager, 
+        public UserService(IUserRepo userRepo, UserManager<User> userManager,
             IConfiguration configuration, IValidator<UserRegisterDto> userValidator)
         {
             _userRepo = userRepo;
-            _userManager = userManager; 
+            _userManager = userManager;
             _configuration = configuration;
             _userValidator = userValidator;
         }
         public async Task<ApiResponse> RegisterNewUser(UserRegisterDto userRegisterDto)
         {
-            ApiResponse response = new ApiResponse() {
-                IsSuccess = false, StatusCode = StatusCodes.Status400BadRequest };
+            ApiResponse response = new ApiResponse()
+            {
+                IsSuccess = false,
+                StatusCode = StatusCodes.Status400BadRequest
+            };
             var validationResult = await _userValidator.ValidateAsync(userRegisterDto);
             var userExist = await _userRepo.GetByEmailAsync(userRegisterDto.Email);
 
@@ -66,6 +69,13 @@ namespace PrintShop.BLL.Services
             }
             else
             {
+                if (!validationResult.IsValid)
+                {
+                    foreach (var error in validationResult.Errors)
+                    {
+                        response.ErrorMessages.Add(error.ErrorMessage);
+                    }
+                }
                 if (userExist != null)
                 {
                     response.ErrorMessages.Add("User already exists.");

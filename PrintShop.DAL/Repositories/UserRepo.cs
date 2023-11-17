@@ -24,7 +24,7 @@ namespace PrintShop.DAL.Repositories
 
         public async Task<IdentityResult> AddAsync(User user, string password)
         {
-           return await _userManager.CreateAsync(user, password);
+            return await _userManager.CreateAsync(user, password);
         }
 
         public async Task<IdentityResult> DeleteAsync(User user)

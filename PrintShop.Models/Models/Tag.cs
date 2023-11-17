@@ -2,7 +2,7 @@
 {
     public class Tag
     {
-        public string Name { get; set; }
-        public List<Picture> Pictures { get; set; }
+        public string Name { get; set; } = String.Empty;
+        public List<Picture>? Pictures { get; set; }
     }
 }

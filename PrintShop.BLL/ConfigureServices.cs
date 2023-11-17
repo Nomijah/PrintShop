@@ -24,7 +24,7 @@ namespace PrintShop.BLL
         {
             services.AddScoped<IUserService, UserService>();
             services.AddValidatorsFromAssemblyContaining<UserRegistrationValidator>();
-            services.AddTransient<IValidator<UserRegisterDto>, UserRegistrationValidator>();
+            services.AddScoped<IValidator<UserRegisterDto>, UserRegistrationValidator>();
 
 
             return services;
