@@ -6,11 +6,6 @@ using PrintShop.DAL.Context;
 using PrintShop.DAL.Repositories;
 using PrintShop.DAL.Repositories.Interfaces;
 using PrintShop.GlobalData.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PrintShop.DAL
 {
@@ -28,6 +23,8 @@ namespace PrintShop.DAL
             services.AddIdentity<User, IdentityRole>()
                 .AddEntityFrameworkStores<AppDbContext>()
                 .AddDefaultTokenProviders();
+
+
 
             return services;
         }

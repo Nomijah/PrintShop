@@ -58,10 +58,10 @@ namespace PrintShop.DAL.Repositories
         }
 
         public async Task<IdentityResult> UpdatePasswordAsync(
-            User user, string newPassword, string oldPassword)
+            User user, string newPassword, string currentPassword)
         {
             return await _userManager.ChangePasswordAsync(
-                user, newPassword, oldPassword);
+                user, currentPassword, newPassword);
         }
     }
 }

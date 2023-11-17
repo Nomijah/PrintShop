@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using PrintShop.BLL.Services.Interfaces;
-using PrintShop.GlobalData.Models.DTOs;
+using PrintShop.GlobalData.Models.DTOs.UserDTOs;
 using Serilog;
 
 namespace PrintShopAPI.Controllers
@@ -19,6 +19,14 @@ namespace PrintShopAPI.Controllers
         public async Task<IActionResult> RegisterUser(UserRegisterDto userRegisterDto)
         {
             var response = await _userService.RegisterNewUser(userRegisterDto);
+            Log.Information("Response => {@response}", response);
+            return response.IsSuccess ? Ok(response) : BadRequest(response);
+        }
+
+        [HttpPut]
+        public async Task<IActionResult> UpdatePassword(PasswordUpdateDto passwordUpdateDto)
+        {
+            var response = await _userService.UpdatePassword(passwordUpdateDto);
             Log.Information("Response => {@response}", response);
             return response.IsSuccess ? Ok(response) : BadRequest(response);
         }

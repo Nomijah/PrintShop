@@ -5,18 +5,25 @@ using Serilog;
 using FluentValidation;
 using PrintShop.GlobalData.Models.DTOs.UserDTOs;
 using PrintShopAPI.Middlewares;
+using PrintShop.GlobalData.Data;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<IValidator<UserRegisterDto>, UserRegistrationValidator>();
 
-builder.Services.DbServicesDAL(builder.Configuration).DbServicesBLL();
+// Configuration from DAl and BLL
+builder.Services.DbServicesDAL(builder.Configuration).DbServicesBLL(builder.Configuration);
+
+// Add Email Config
+builder.Services.Configure<EmailConfiguration>(builder.Configuration.GetSection("EmailConfiguration"));
+builder.Services.AddSingleton(sp => sp.GetRequiredService<IOptions<EmailConfiguration>>().Value);
 
 Log.Logger = new LoggerConfiguration()
     .ReadFrom.Configuration(builder.Configuration)

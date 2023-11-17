@@ -18,7 +18,7 @@ namespace PrintShop.DAL.Repositories.Interfaces
         Task<IdentityResult> UpdateAsync(User user);
         Task<IdentityResult> DeleteAsync(User user);
         Task<IdentityResult> UpdatePasswordAsync(
-            User user, string newPassword, string oldPassword);
+            User user, string newPassword, string currentPassword);
         Task<IdentityResult> SetNewRoleAsync(User user, string role);
     }
 }

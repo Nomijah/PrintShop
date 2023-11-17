@@ -1,7 +1,8 @@
-﻿using Microsoft.AspNetCore.DataProtection.Internal;
+﻿using FluentValidation;
+using Microsoft.AspNetCore.DataProtection.Internal;
 using PrintShop.GlobalData.Data;
 using PrintShop.GlobalData.Models;
-using PrintShop.GlobalData.Models.DTOs;
+using PrintShop.GlobalData.Models.DTOs.UserDTOs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,8 +14,7 @@ namespace PrintShop.BLL.Services.Interfaces
     public interface IUserService
     {
         public Task<ApiResponse> RegisterNewUser(UserRegisterDto userRegisterDto);
-        public Task<ApiResponse> UpdatePassword(
-            User user, string newPassword, string oldPassword);
+        public Task<ApiResponse> UpdatePassword(PasswordUpdateDto passwordUpdateDto);
         //public Task<ApiResponse> 
 
     }

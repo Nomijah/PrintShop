@@ -1,14 +1,14 @@
 ﻿using FluentValidation;
-using PrintShop.GlobalData.Models.DTOs;
+using PrintShop.GlobalData.Models.DTOs.UserDTOs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PrintShop.BLL.Validation
+namespace PrintShop.BLL.Validation.UserValidations
 {
-    internal class UserRegistrationValidator : AbstractValidator<UserRegisterDto>
+    public class UserRegistrationValidator : AbstractValidator<UserRegisterDto>
     {
         public UserRegistrationValidator()
         {

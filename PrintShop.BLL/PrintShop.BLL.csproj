@@ -7,13 +7,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\PrintShop.DAL\PrintShop.DAL.csproj" />
-    <ProjectReference Include="..\PrintShop.Models\PrintShop.GlobalData.csproj" />
+    <PackageReference Include="FluentValidation" Version="11.8.0" />
+    <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.8.0" />
+    <PackageReference Include="NETCore.MailKit" Version="2.1.0" />
+    <PackageReference Include="Serilog" Version="3.1.1" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="FluentValidation" Version="11.8.0" />
-    <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.8.0" />
+    <ProjectReference Include="..\PrintShop.DAL\PrintShop.DAL.csproj" />
+    <ProjectReference Include="..\PrintShop.Models\PrintShop.GlobalData.csproj" />
   </ItemGroup>
 
 </Project>
