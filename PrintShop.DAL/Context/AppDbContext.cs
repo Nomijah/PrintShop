@@ -22,6 +22,7 @@ namespace PrintShop.DAL.Context
             base.OnModelCreating(builder);
             builder.Entity<Favorite>().HasKey(f => new { f.PictureId, f.UserId });
             builder.Entity<UserOrder>().HasKey(c => new { c.UserId, c.OrderId });
+            builder.Entity<UserCreatorId>().HasKey(c => new { c.CreatorId, c.UserId });
             builder.Entity<Tag>().HasKey(c => new { c.Name });
             SeedData.SeedRoles(builder);
             SeedData.SeedPrintSizes(builder);
@@ -44,6 +45,8 @@ namespace PrintShop.DAL.Context
         public DbSet<Product> Products { get; set; }
         public DbSet<Shipment> Shipments { get; set; }
         public DbSet<Variant> Variants { get; set; }
+        public DbSet<UserCreatorId> UserCreatorIds { get; set; }
+
 
     }
 }

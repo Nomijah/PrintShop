@@ -50,17 +50,24 @@ namespace PrintShop.DAL.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "ebcf7a7d-e0c1-46bc-85e4-20d893b2e16a",
+                            Id = "1d94fd8e-a64b-4104-9aae-e2b8799dd349",
                             ConcurrencyStamp = "1",
                             Name = "Admin",
-                            NormalizedName = "Admin"
+                            NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "2e78ecd1-10f8-4eae-8faf-44d1bcc61133",
+                            Id = "bd4f79d2-4725-4c95-85a1-74ebf555c93a",
                             ConcurrencyStamp = "2",
                             Name = "Customer",
-                            NormalizedName = "Customer"
+                            NormalizedName = "CUSTOMER"
+                        },
+                        new
+                        {
+                            Id = "f9c3bf7a-b6a4-4537-a0cc-217e34ffe026",
+                            ConcurrencyStamp = "3",
+                            Name = "Creator",
+                            NormalizedName = "CREATOR"
                         });
                 });
 
@@ -513,6 +520,10 @@ namespace PrintShop.DAL.Migrations
                     b.Property<decimal>("BasePrice")
                         .HasColumnType("numeric");
 
+                    b.Property<string>("CreatorIdentifier")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("text");
@@ -828,6 +839,19 @@ namespace PrintShop.DAL.Migrations
                         .HasDatabaseName("UserNameIndex");
 
                     b.ToTable("AspNetUsers", (string)null);
+                });
+
+            modelBuilder.Entity("PrintShop.GlobalData.Models.UserCreatorId", b =>
+                {
+                    b.Property<string>("CreatorId")
+                        .HasColumnType("text");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("text");
+
+                    b.HasKey("CreatorId", "UserId");
+
+                    b.ToTable("UserCreatorIds");
                 });
 
             modelBuilder.Entity("PrintShop.GlobalData.Models.UserOrder", b =>

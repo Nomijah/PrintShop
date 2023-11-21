@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using PrintShop.BLL.Services;
@@ -15,7 +16,7 @@ namespace PrintShop.BLL
         {
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IEmailService, EmailService>();
-            services.AddScoped<IAuthenticationService, AuthenticationService>();
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
             services.AddValidatorsFromAssemblyContaining<PasswordUpdateValidator>();
 

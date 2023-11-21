@@ -1,19 +1,13 @@
-﻿using FluentValidation;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Configuration;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Routing;
 using PrintShop.BLL.Services.Interfaces;
 using PrintShop.BLL.Validation.UserValidations;
-using PrintShop.DAL.Repositories;
 using PrintShop.DAL.Repositories.Interfaces;
 using PrintShop.GlobalData.Data;
 using PrintShop.GlobalData.Models;
 using PrintShop.GlobalData.Models.DTOs.UserDTOs;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PrintShop.BLL.Services
 {
@@ -21,13 +15,18 @@ namespace PrintShop.BLL.Services
     {
         private readonly IUserRepo _userRepo;
         private readonly UserManager<User> _userManager;
+        private readonly IEmailService _emailService;
+        private readonly IUrlHelperFactory _urlHelperFactory;
 
-        public UserService(IUserRepo userRepo, UserManager<User> userManager)
+        public UserService(IUserRepo userRepo, UserManager<User> userManager, 
+            IEmailService emailService, IUrlHelperFactory urlHelperFactory)
         {
             _userRepo = userRepo;
             _userManager = userManager;
+            _emailService = emailService;
+            _urlHelperFactory = urlHelperFactory;
         }
-        public async Task<ApiResponse> RegisterNewUser(UserRegisterDto userRegisterDto)
+        public async Task<ApiResponse> RegisterNewUser(UserRegisterDto userRegisterDto, HttpContext httpContext)
         {
             ApiResponse response = new ApiResponse()
             {
@@ -50,7 +49,23 @@ namespace PrintShop.BLL.Services
 
                 if (result.Succeeded)
                 {
+                    // Add customer role to user
                     await _userManager.AddToRoleAsync(userToRegister, "customer");
+
+                    // Add token
+                    var urlHelper = _urlHelperFactory.GetUrlHelper(new ActionContext
+                    {
+                        HttpContext = httpContext
+                    });
+                    var token = await _userManager
+                        .GenerateEmailConfirmationTokenAsync(userToRegister);
+                    var confirmationLink = urlHelper.Action("ConfirmEmail",
+                        "User", new { token, userToRegister.Email },
+                        urlHelper.ActionContext.HttpContext.Request.Scheme);
+                    var message = new Message(new string[] { userToRegister.Email! },
+                        "Email confirmation link", confirmationLink!);
+                    _emailService.SendEmail(message);
+
                     response.StatusCode = StatusCodes.Status201Created;
                     response.IsSuccess = true;
                     return response;
@@ -129,6 +144,31 @@ namespace PrintShop.BLL.Services
                 }
                 return response;
             }
+        }
+
+        public async Task<ApiResponse> ConfirmEmail(string token, string email)
+        {
+            ApiResponse response = new ApiResponse()
+            {
+                IsSuccess = false,
+                StatusCode = StatusCodes.Status400BadRequest
+            };
+
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user != null)
+            {
+                var result = await _userManager.ConfirmEmailAsync(user, token);
+                if (result.Succeeded)
+                {
+                    response.StatusCode = StatusCodes.Status200OK;
+                    response.IsSuccess = true;
+                    return response;
+                }
+            }
+
+            response.StatusCode = StatusCodes.Status404NotFound;
+            response.ErrorMessages.Add("User not found.");
+            return response;
         }
     }
 }

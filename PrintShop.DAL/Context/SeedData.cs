@@ -16,9 +16,11 @@ namespace PrintShop.DAL.Context
         {
             builder.Entity<IdentityRole>().HasData(
                 new IdentityRole()
-                { Name = "Admin", ConcurrencyStamp = "1", NormalizedName = "Admin" },
+                { Name = "Admin", ConcurrencyStamp = "1", NormalizedName = "ADMIN" },
                 new IdentityRole()
-                { Name = "Customer", ConcurrencyStamp = "2", NormalizedName = "Customer" });
+                { Name = "Customer", ConcurrencyStamp = "2", NormalizedName = "CUSTOMER" },
+                new IdentityRole()
+                { Name = "Creator", ConcurrencyStamp = "3", NormalizedName = "CREATOR" });
         }
 
         internal static void SeedPrintSizes(ModelBuilder builder)

@@ -6,8 +6,10 @@ using FluentValidation;
 using PrintShop.GlobalData.Models.DTOs.UserDTOs;
 using PrintShopAPI.Middlewares;
 using PrintShop.GlobalData.Data;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
+using Microsoft.AspNetCore.Identity;
+using PrintShop.DAL.Context;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,6 +20,23 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<IValidator<UserRegisterDto>, UserRegistrationValidator>();
 
+// For identity
+//builder.Services.AddIdentity<IdentityUser, IdentityRole>()
+//    .AddEntityFrameworkStores<AppDbContext>()
+//    .AddDefaultTokenProviders();
+
+// Add authentication
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+});
+
+// Add config for requiring email confirmation
+builder.Services.Configure<IdentityOptions>(
+    options => options.SignIn.RequireConfirmedEmail = true);
+
 // Configuration from DAl and BLL
 builder.Services.DbServicesDAL(builder.Configuration).DbServicesBLL(builder.Configuration);
 
@@ -25,10 +44,10 @@ builder.Services.DbServicesDAL(builder.Configuration).DbServicesBLL(builder.Conf
 builder.Services.Configure<EmailConfiguration>(builder.Configuration.GetSection("EmailConfiguration"));
 builder.Services.AddSingleton(sp => sp.GetRequiredService<IOptions<EmailConfiguration>>().Value);
 
+// Configuration of Serilog
 Log.Logger = new LoggerConfiguration()
     .ReadFrom.Configuration(builder.Configuration)
     .CreateLogger();
-
 builder.Host.UseSerilog();
 
 
@@ -45,6 +64,8 @@ if (app.Environment.IsDevelopment())
 app.UseSerilogRequestLogging();
 
 app.UseHttpsRedirection();
+
+app.UseAuthentication();
 
 app.UseAuthorization();
 

@@ -1,9 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
+
+#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
 
 namespace PrintShop.DAL.Migrations
 {
@@ -53,18 +54,57 @@ namespace PrintShop.DAL.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Materials",
+                name: "Discounts",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Name = table.Column<string>(type: "text", nullable: false),
-                    Description = table.Column<string>(type: "text", nullable: false),
+                    StartDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    EndDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    isActive = table.Column<bool>(type: "boolean", nullable: false),
+                    DiscountType = table.Column<int>(type: "integer", nullable: false),
+                    MinimumSpent = table.Column<decimal>(type: "numeric", nullable: false),
+                    MinimumItems = table.Column<decimal>(type: "numeric", nullable: false),
+                    AmountOff = table.Column<decimal>(type: "numeric", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Discounts", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Materials",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Name = table.Column<string>(type: "text", nullable: true),
+                    Description = table.Column<string>(type: "text", nullable: true),
                     IsActive = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Materials", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Orders",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Head = table.Column<string>(type: "text", nullable: false),
+                    TotalPrice = table.Column<decimal>(type: "numeric", nullable: false),
+                    OrderTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    ShippingTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    IsShipped = table.Column<bool>(type: "boolean", nullable: false),
+                    IsPaid = table.Column<bool>(type: "boolean", nullable: false),
+                    IsActive = table.Column<bool>(type: "boolean", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Orders", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -74,18 +114,44 @@ namespace PrintShop.DAL.Migrations
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     SKUPart = table.Column<string>(type: "text", nullable: false),
+                    CreatorIdentifier = table.Column<string>(type: "text", nullable: false),
                     url = table.Column<string>(type: "text", nullable: false),
                     Title = table.Column<string>(type: "text", nullable: false),
                     Description = table.Column<string>(type: "text", nullable: false),
                     Height = table.Column<int>(type: "integer", nullable: false),
                     Width = table.Column<int>(type: "integer", nullable: false),
                     BasePrice = table.Column<decimal>(type: "numeric", nullable: false),
-                    IsActive = table.Column<bool>(type: "boolean", nullable: false),
-                    Tags = table.Column<List<string>>(type: "text[]", nullable: true)
+                    IsActive = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Pictures", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PrintSize",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Size = table.Column<string>(type: "text", nullable: true),
+                    Height = table.Column<int>(type: "integer", nullable: false),
+                    Width = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PrintSize", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Tag",
+                columns: table => new
+                {
+                    Name = table.Column<string>(type: "text", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Tag", x => x.Name);
                 });
 
             migrationBuilder.CreateTable(
@@ -232,31 +298,6 @@ namespace PrintShop.DAL.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Orders",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Head = table.Column<string>(type: "text", nullable: false),
-                    TotalPrice = table.Column<decimal>(type: "numeric", nullable: false),
-                    OrderTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    ShippingTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    IsShipped = table.Column<bool>(type: "boolean", nullable: false),
-                    IsPaid = table.Column<bool>(type: "boolean", nullable: false),
-                    IsActive = table.Column<bool>(type: "boolean", nullable: false),
-                    UserId = table.Column<string>(type: "text", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Orders", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Orders_AspNetUsers_UserId",
-                        column: x => x.UserId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Payments",
                 columns: table => new
                 {
@@ -278,45 +319,21 @@ namespace PrintShop.DAL.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "PrintSize",
+                name: "UserOrder",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    ArticleCode = table.Column<int>(type: "integer", nullable: false),
-                    Size = table.Column<string>(type: "text", nullable: true),
-                    Height = table.Column<decimal>(type: "numeric", nullable: false),
-                    Width = table.Column<decimal>(type: "numeric", nullable: false),
-                    MaterialId = table.Column<int>(type: "integer", nullable: true)
+                    UserId = table.Column<string>(type: "text", nullable: false),
+                    OrderId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_PrintSize", x => x.Id);
+                    table.PrimaryKey("PK_UserOrder", x => new { x.UserId, x.OrderId });
                     table.ForeignKey(
-                        name: "FK_PrintSize_Materials_MaterialId",
-                        column: x => x.MaterialId,
-                        principalTable: "Materials",
-                        principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Categories",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    ParentCategoryId = table.Column<int>(type: "integer", nullable: true),
-                    Name = table.Column<string>(type: "text", nullable: false),
-                    PictureId = table.Column<int>(type: "integer", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Categories", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Categories_Pictures_PictureId",
-                        column: x => x.PictureId,
-                        principalTable: "Pictures",
-                        principalColumn: "Id");
+                        name: "FK_UserOrder_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -378,6 +395,26 @@ namespace PrintShop.DAL.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Categories",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    ParentCategoryId = table.Column<int>(type: "integer", nullable: true),
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    PictureId = table.Column<int>(type: "integer", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Categories", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Categories_Pictures_PictureId",
+                        column: x => x.PictureId,
+                        principalTable: "Pictures",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Variants",
                 columns: table => new
                 {
@@ -403,6 +440,30 @@ namespace PrintShop.DAL.Migrations
                         column: x => x.PrintSizeId,
                         principalTable: "PrintSize",
                         principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PictureTag",
+                columns: table => new
+                {
+                    PicturesId = table.Column<int>(type: "integer", nullable: false),
+                    TagsName = table.Column<string>(type: "text", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PictureTag", x => new { x.PicturesId, x.TagsName });
+                    table.ForeignKey(
+                        name: "FK_PictureTag_Pictures_PicturesId",
+                        column: x => x.PicturesId,
+                        principalTable: "Pictures",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_PictureTag_Tag_TagsName",
+                        column: x => x.TagsName,
+                        principalTable: "Tag",
+                        principalColumn: "Name",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -462,42 +523,6 @@ namespace PrintShop.DAL.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Discounts",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Name = table.Column<string>(type: "text", nullable: false),
-                    StartDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    EndDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    isActive = table.Column<bool>(type: "boolean", nullable: false),
-                    PercentOff = table.Column<int>(type: "integer", nullable: true),
-                    PriceOff = table.Column<decimal>(type: "numeric", nullable: true),
-                    PictureId = table.Column<int>(type: "integer", nullable: true),
-                    ProductId = table.Column<int>(type: "integer", nullable: true),
-                    VariantId = table.Column<int>(type: "integer", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Discounts", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Discounts_Pictures_PictureId",
-                        column: x => x.PictureId,
-                        principalTable: "Pictures",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_Discounts_Products_ProductId",
-                        column: x => x.ProductId,
-                        principalTable: "Products",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_Discounts_Variants_VariantId",
-                        column: x => x.VariantId,
-                        principalTable: "Variants",
-                        principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
                 name: "DiscountProducts",
                 columns: table => new
                 {
@@ -517,6 +542,64 @@ namespace PrintShop.DAL.Migrations
                         principalTable: "Discounts",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_DiscountProducts_Pictures_PictureId",
+                        column: x => x.PictureId,
+                        principalTable: "Pictures",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_DiscountProducts_Products_ProductId",
+                        column: x => x.ProductId,
+                        principalTable: "Products",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_DiscountProducts_Variants_VariantId",
+                        column: x => x.VariantId,
+                        principalTable: "Variants",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.InsertData(
+                table: "AspNetRoles",
+                columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
+                values: new object[,]
+                {
+                    { "87ce2125-4c09-45b3-a31e-8d494513c9a1", "2", "Customer", "CUSTOMER" },
+                    { "91ccad20-33ab-45e9-bf5d-6ab78ce63c70", "3", "Creator", "CREATOR" },
+                    { "d15a6051-f373-495e-a3df-96b949d5f92f", "1", "Admin", "ADMIN" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Materials",
+                columns: new[] { "Id", "Description", "IsActive", "Name" },
+                values: new object[,]
+                {
+                    { 101, "Direktprint på Kapa är en prisvärd utskrift som lämpar sig för skyltproduktion eller tillfälliga utställningar.", true, "Kapa" },
+                    { 102, "Direktprint på plywood är en högkvalitativ utskrift direkt på träytan.", true, "Plywood" },
+                    { 103, "Tryck dina bilder på aluminium med lång hållbarhet och hög kvalitet. Trycket i kombination med aluminiumet ger dina bilder ett metalliskt skimmer och en modern industriell känsla.", true, "Aluminium" },
+                    { 104, "Tryck dina bilder på reptåligt plexiglas i tjocklekarna 4 mm och 8 mm. Trycket är högkvalitativ och lämpligt för både inom- och utomhusbruk.", true, "Plexiglas" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "PrintSize",
+                columns: new[] { "Id", "Height", "Size", "Width" },
+                values: new object[,]
+                {
+                    { 101, 30, "30x30", 30 },
+                    { 102, 50, "50x50", 50 },
+                    { 103, 70, "70x70", 70 },
+                    { 104, 100, "100x100", 100 },
+                    { 105, 150, "150x150", 150 },
+                    { 201, 30, "30x45", 45 },
+                    { 202, 50, "50x75", 75 },
+                    { 203, 70, "70x105", 105 },
+                    { 204, 100, "100x150", 150 },
+                    { 205, 150, "150x225", 225 },
+                    { 301, 45, "45x30", 30 },
+                    { 302, 75, "75x50", 50 },
+                    { 303, 105, "105x70", 70 },
+                    { 304, 150, "150x100", 100 },
+                    { 305, 225, "225x150", 150 }
                 });
 
             migrationBuilder.CreateIndex(
@@ -583,18 +666,18 @@ namespace PrintShop.DAL.Migrations
                 column: "DiscountId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Discounts_PictureId",
-                table: "Discounts",
+                name: "IX_DiscountProducts_PictureId",
+                table: "DiscountProducts",
                 column: "PictureId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Discounts_ProductId",
-                table: "Discounts",
+                name: "IX_DiscountProducts_ProductId",
+                table: "DiscountProducts",
                 column: "ProductId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Discounts_VariantId",
-                table: "Discounts",
+                name: "IX_DiscountProducts_VariantId",
+                table: "DiscountProducts",
                 column: "VariantId");
 
             migrationBuilder.CreateIndex(
@@ -608,19 +691,14 @@ namespace PrintShop.DAL.Migrations
                 column: "OrderId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Orders_UserId",
-                table: "Orders",
-                column: "UserId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Payments_UserId",
                 table: "Payments",
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_PrintSize_MaterialId",
-                table: "PrintSize",
-                column: "MaterialId");
+                name: "IX_PictureTag_TagsName",
+                table: "PictureTag",
+                column: "TagsName");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Products_PictureId",
@@ -690,7 +768,13 @@ namespace PrintShop.DAL.Migrations
                 name: "Payments");
 
             migrationBuilder.DropTable(
+                name: "PictureTag");
+
+            migrationBuilder.DropTable(
                 name: "Shipments");
+
+            migrationBuilder.DropTable(
+                name: "UserOrder");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
@@ -702,10 +786,13 @@ namespace PrintShop.DAL.Migrations
                 name: "Discounts");
 
             migrationBuilder.DropTable(
-                name: "Orders");
+                name: "Products");
 
             migrationBuilder.DropTable(
-                name: "Products");
+                name: "Tag");
+
+            migrationBuilder.DropTable(
+                name: "Orders");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
@@ -717,10 +804,10 @@ namespace PrintShop.DAL.Migrations
                 name: "Variants");
 
             migrationBuilder.DropTable(
-                name: "PrintSize");
+                name: "Materials");
 
             migrationBuilder.DropTable(
-                name: "Materials");
+                name: "PrintSize");
         }
     }
 }

@@ -10,6 +10,7 @@ namespace PrintShop.GlobalData.Models
     {
         public int Id { get; set; }
         public string SKUPart { get; set; } = string.Empty;
+        public string CreatorIdentifier { get; set; } = string.Empty;
         public string url { get; set; } = string.Empty;
         public string Title { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;

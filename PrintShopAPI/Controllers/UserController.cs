@@ -15,18 +15,26 @@ namespace PrintShopAPI.Controllers
             _userService = userService;
         }
 
-        [HttpPost]
+        [HttpPost("RegisterUser")]
         public async Task<IActionResult> RegisterUser(UserRegisterDto userRegisterDto)
         {
-            var response = await _userService.RegisterNewUser(userRegisterDto);
+            var response = await _userService.RegisterNewUser(userRegisterDto, Url.ActionContext.HttpContext);
             Log.Information("Response => {@response}", response);
             return response.IsSuccess ? Ok(response) : BadRequest(response);
         }
 
-        [HttpPut]
+        [HttpPut("UpdatePassword")]
         public async Task<IActionResult> UpdatePassword(PasswordUpdateDto passwordUpdateDto)
         {
             var response = await _userService.UpdatePassword(passwordUpdateDto);
+            Log.Information("Response => {@response}", response);
+            return response.IsSuccess ? Ok(response) : BadRequest(response);
+        }
+
+        [HttpGet("ConfirmEmail")]
+        public async Task<IActionResult> ConfirmEmail(string token, string email)
+        {
+            var response = await _userService.ConfirmEmail(token, email);
             Log.Information("Response => {@response}", response);
             return response.IsSuccess ? Ok(response) : BadRequest(response);
         }
