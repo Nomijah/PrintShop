@@ -187,9 +187,22 @@ namespace PrintShop.BLL.Services
 
             var validator = new UserLoginValidator();
             var validationResult = await validator.ValidateAsync(userLogin);
-            var currentUser = await _userManager.FindByEmailAsync(userLogin.UserName);
+            if (!validationResult.IsValid)
+            {
+                response.ErrorMessages.Add("Both email and password are required.");
+                return response;
+            }
 
-            if (currentUser != null && await _userManager.CheckPasswordAsync(currentUser, userLogin.Password)) 
+            var currentUser = await _userManager.FindByEmailAsync(userLogin.UserName);
+            if (currentUser == null)
+            {
+                response.StatusCode = StatusCodes.Status404NotFound;
+                response.ErrorMessages.Add("User not found.");
+                return response;
+            }
+
+            bool passwordConfirmed = await _userManager.CheckPasswordAsync(currentUser, userLogin.Password);
+            if (currentUser != null && passwordConfirmed) 
             {
                 var authClaims = new List<Claim>
                 {
@@ -211,20 +224,7 @@ namespace PrintShop.BLL.Services
                 return response;
             }
 
-            if (!validationResult.IsValid)
-            {
-                response.ErrorMessages.Add("Both email and password are required.");
-                return response;
-            }
-
-            if (currentUser == null)
-            {
-                response.StatusCode = StatusCodes.Status404NotFound;
-                response.ErrorMessages.Add("User not found.");
-                return response;
-            }
-
-            if (await _userManager.CheckPasswordAsync(currentUser, userLogin.Password) == false)
+            if (!passwordConfirmed)
             {
                 response.StatusCode = StatusCodes.Status401Unauthorized;
                 response.ErrorMessages.Add("Wrong password.");
