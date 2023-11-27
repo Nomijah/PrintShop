@@ -5,7 +5,6 @@ using Microsoft.Extensions.DependencyInjection;
 using PrintShop.BLL.Services;
 using PrintShop.BLL.Services.Interfaces;
 using PrintShop.BLL.Validation.UserValidations;
-using PrintShop.GlobalData.Data;
 
 namespace PrintShop.BLL
 {

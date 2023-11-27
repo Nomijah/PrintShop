@@ -38,5 +38,13 @@ namespace PrintShopAPI.Controllers
             Log.Information("Response => {@response}", response);
             return response.IsSuccess ? Ok(response) : BadRequest(response);
         }
+
+        [HttpPost("Login")]
+        public async Task<IActionResult> Login(UserLoginDto userLoginDto)
+        {
+            var response = await _userService.Login(userLoginDto);
+            Log.Information("Response => {@response}", response);
+            return response.IsSuccess ? Ok(response) : BadRequest(response);
+        }
     }
 }

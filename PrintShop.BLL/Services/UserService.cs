@@ -2,29 +2,35 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Routing;
+using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
+using MimeKit.Cryptography;
 using PrintShop.BLL.Services.Interfaces;
 using PrintShop.BLL.Validation.UserValidations;
 using PrintShop.DAL.Repositories.Interfaces;
 using PrintShop.GlobalData.Data;
 using PrintShop.GlobalData.Models;
 using PrintShop.GlobalData.Models.DTOs.UserDTOs;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 
 namespace PrintShop.BLL.Services
 {
     public class UserService : IUserService
     {
-        private readonly IUserRepo _userRepo;
         private readonly UserManager<User> _userManager;
         private readonly IEmailService _emailService;
         private readonly IUrlHelperFactory _urlHelperFactory;
+        private readonly IConfiguration _configuration;
 
-        public UserService(IUserRepo userRepo, UserManager<User> userManager, 
-            IEmailService emailService, IUrlHelperFactory urlHelperFactory)
+        public UserService(UserManager<User> userManager, IEmailService emailService, 
+            IUrlHelperFactory urlHelperFactory, IConfiguration configuration)
         {
-            _userRepo = userRepo;
             _userManager = userManager;
             _emailService = emailService;
             _urlHelperFactory = urlHelperFactory;
+            _configuration = configuration;
         }
         public async Task<ApiResponse> RegisterNewUser(UserRegisterDto userRegisterDto, HttpContext httpContext)
         {
@@ -35,7 +41,7 @@ namespace PrintShop.BLL.Services
             };
             var validator = new UserRegistrationValidator();
             var validationResult = await validator.ValidateAsync(userRegisterDto);
-            var userExist = await _userRepo.GetByEmailAsync(userRegisterDto.Email);
+            var userExist = await _userManager.FindByEmailAsync(userRegisterDto.Email);
 
             if (validationResult.IsValid && userExist == null)
             {
@@ -45,7 +51,7 @@ namespace PrintShop.BLL.Services
                     UserName = userRegisterDto.Email
                 };
 
-                var result = await _userRepo.AddAsync(userToRegister, userRegisterDto.Password);
+                var result = await _userManager.CreateAsync(userToRegister, userRegisterDto.Password);
 
                 if (result.Succeeded)
                 {
@@ -106,11 +112,11 @@ namespace PrintShop.BLL.Services
 
             var validator = new PasswordUpdateValidator();
             var validationResult = await validator.ValidateAsync(passwordUpdateDto);
-            var userToUpdate = await _userRepo.GetByEmailAsync(passwordUpdateDto.Email);
+            var userToUpdate = await _userManager.FindByEmailAsync(passwordUpdateDto.Email);
 
             if (validationResult.IsValid && userToUpdate != null)
             {
-                var result = await _userRepo.UpdatePasswordAsync(userToUpdate,
+                var result = await _userManager.ChangePasswordAsync(userToUpdate,
                     passwordUpdateDto.NewPassword, passwordUpdateDto.CurrentPassword);
 
                 if (result.Succeeded)
@@ -169,6 +175,77 @@ namespace PrintShop.BLL.Services
             response.StatusCode = StatusCodes.Status404NotFound;
             response.ErrorMessages.Add("User not found.");
             return response;
+        }
+
+        public async Task<ApiResponse> Login(UserLoginDto userLogin)
+        {
+            ApiResponse response = new ApiResponse()
+            {
+                IsSuccess = false,
+                StatusCode = StatusCodes.Status400BadRequest
+            };
+
+            var validator = new UserLoginValidator();
+            var validationResult = await validator.ValidateAsync(userLogin);
+            var currentUser = await _userManager.FindByEmailAsync(userLogin.UserName);
+
+            if (currentUser != null && await _userManager.CheckPasswordAsync(currentUser, userLogin.Password)) 
+            {
+                var authClaims = new List<Claim>
+                {
+                    new Claim(ClaimTypes.Name, currentUser.UserName),
+                    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+                };
+
+                var userRoles = await _userManager.GetRolesAsync(currentUser);
+                foreach (var role in userRoles)
+                {
+                    authClaims.Add(new Claim(ClaimTypes.Role, role));
+                }
+
+                var jwtToken = GetToken(authClaims);
+
+                response.IsSuccess = true;
+                response.StatusCode = StatusCodes.Status200OK;
+                response.Result = new ClaimResponse(jwtToken);
+                return response;
+            }
+
+            if (!validationResult.IsValid)
+            {
+                response.ErrorMessages.Add("Both email and password are required.");
+                return response;
+            }
+
+            if (currentUser == null)
+            {
+                response.StatusCode = StatusCodes.Status404NotFound;
+                response.ErrorMessages.Add("User not found.");
+                return response;
+            }
+
+            if (await _userManager.CheckPasswordAsync(currentUser, userLogin.Password) == false)
+            {
+                response.StatusCode = StatusCodes.Status401Unauthorized;
+                response.ErrorMessages.Add("Wrong password.");
+                return response;
+            }
+            return response;
+        }
+
+        private JwtSecurityToken GetToken(List<Claim> authClaims)
+        {
+            var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Secret"]));
+
+            var token = new JwtSecurityToken(
+                issuer: _configuration["JWT:ValidIssuer"],
+                audience: _configuration["JWT:ValidAudience"],
+                expires: DateTime.Now.AddHours(1),
+                claims: authClaims,
+                signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
+                );
+
+            return token;
         }
     }
 }
