@@ -2,14 +2,14 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Routing;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
-using MimeKit.Cryptography;
 using PrintShop.BLL.Services.Interfaces;
 using PrintShop.BLL.Validation.UserValidations;
-using PrintShop.DAL.Repositories.Interfaces;
 using PrintShop.GlobalData.Data;
 using PrintShop.GlobalData.Models;
+using PrintShop.GlobalData.Models.DTOs.ResponseDTOs;
 using PrintShop.GlobalData.Models.DTOs.UserDTOs;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -24,8 +24,8 @@ namespace PrintShop.BLL.Services
         private readonly IUrlHelperFactory _urlHelperFactory;
         private readonly IConfiguration _configuration;
 
-        public UserService(UserManager<User> userManager, IEmailService emailService, 
-            IUrlHelperFactory urlHelperFactory, IConfiguration configuration)
+        public UserService(UserManager<User> userManager,
+            IEmailService emailService, IUrlHelperFactory urlHelperFactory, IConfiguration configuration)
         {
             _userManager = userManager;
             _emailService = emailService;
@@ -145,7 +145,7 @@ namespace PrintShop.BLL.Services
                 }
                 if (userToUpdate == null)
                 {
-                    response.StatusCode= StatusCodes.Status404NotFound;
+                    response.StatusCode = StatusCodes.Status404NotFound;
                     response.ErrorMessages.Add("User not found.");
                 }
                 return response;
@@ -202,7 +202,7 @@ namespace PrintShop.BLL.Services
             }
 
             bool passwordConfirmed = await _userManager.CheckPasswordAsync(currentUser, userLogin.Password);
-            if (currentUser != null && passwordConfirmed) 
+            if (currentUser != null && passwordConfirmed)
             {
                 var authClaims = new List<Claim>
                 {
@@ -228,11 +228,11 @@ namespace PrintShop.BLL.Services
             {
                 response.StatusCode = StatusCodes.Status401Unauthorized;
                 response.ErrorMessages.Add("Wrong password.");
-                return response;
             }
             return response;
         }
 
+        // Token generator to be used by Login
         private JwtSecurityToken GetToken(List<Claim> authClaims)
         {
             var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Secret"]));
@@ -247,5 +247,46 @@ namespace PrintShop.BLL.Services
 
             return token;
         }
+
+        public async Task<ApiResponse> GetAll()
+        {
+            ApiResponse response = new ApiResponse()
+            {
+                IsSuccess = false,
+                StatusCode = StatusCodes.Status400BadRequest
+            };
+            var users = await _userManager.Users.ToListAsync();
+
+            var result = new List<UserResponseDto>();
+            foreach ( var user in users )
+            {
+                result.Add(new UserResponseDto
+                {
+                    id = user.Id.ToString(),
+                    userName = user.UserName,
+                    email = user.Email,
+                    emailConfirmed = user.EmailConfirmed
+                });
+            }
+
+            if (result != null)
+            {
+                response.IsSuccess = true;
+                response.StatusCode = StatusCodes.Status200OK;
+                response.Result = result;
+                return response;
+            }
+            return response;
+        }
+
+        //public async Task<ApiResponse> GetAllWithRoles()
+        //{
+        //    ApiResponse response = new ApiResponse()
+        //    {
+        //        IsSuccess = false,
+        //        StatusCode = StatusCodes.Status400BadRequest
+        //    };
+        //    var usersWithRoles = await _userManager.Users.Join(_userManager.);
+        //}
     }
 }

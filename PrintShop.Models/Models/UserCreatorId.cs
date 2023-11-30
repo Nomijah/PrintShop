@@ -9,7 +9,7 @@ namespace PrintShop.GlobalData.Models
 {
     public class UserCreatorId
     {
-        public string UserId { get; set; } = string.Empty;
+        public Guid UserId { get; set; }
         public string CreatorId { get; set; } = string.Empty;
     }
 }

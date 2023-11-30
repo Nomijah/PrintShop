@@ -10,6 +10,7 @@ namespace PrintShop.BLL.Services.Interfaces
         public Task<ApiResponse> UpdatePassword(PasswordUpdateDto passwordUpdateDto);
         public Task<ApiResponse> ConfirmEmail(string token, string email);
         public Task<ApiResponse> Login(UserLoginDto userLoginDto);
+        public Task<ApiResponse> GetAll();
 
     }
 }

@@ -2,7 +2,7 @@
 {
     public class Favorite
     {
-        public string UserId { get; set; } = string.Empty;
+        public Guid UserId { get; set; }
         public int PictureId { get; set; }
     }
 }

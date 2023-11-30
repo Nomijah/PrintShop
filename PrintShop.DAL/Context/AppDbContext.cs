@@ -2,24 +2,34 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using PrintShop.GlobalData.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Reflection.Emit;
 
 namespace PrintShop.DAL.Context
 {
-    public class AppDbContext : IdentityDbContext<User>
+    public class AppDbContext : IdentityDbContext<User, Role, Guid, IdentityUserClaim<Guid>,
+    UserRole, IdentityUserLogin<Guid>,
+    IdentityRoleClaim<Guid>, IdentityUserToken<Guid>>
     {
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
-            
+
         }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
+
+            foreach (var entityType in builder.Model.GetEntityTypes())
+            {
+                var tableName = entityType.GetTableName();
+                if (tableName.StartsWith("AspNet"))
+                {
+                    entityType.SetTableName(tableName.Substring(6));
+                }
+            }
+
+            builder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
+
             builder.Entity<Favorite>().HasKey(f => new { f.PictureId, f.UserId });
             builder.Entity<UserOrder>().HasKey(c => new { c.UserId, c.OrderId });
             builder.Entity<UserCreatorId>().HasKey(c => new { c.CreatorId, c.UserId });
@@ -46,7 +56,6 @@ namespace PrintShop.DAL.Context
         public DbSet<Shipment> Shipments { get; set; }
         public DbSet<Variant> Variants { get; set; }
         public DbSet<UserCreatorId> UserCreatorIds { get; set; }
-
 
     }
 }

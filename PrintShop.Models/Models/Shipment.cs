@@ -17,7 +17,5 @@ namespace PrintShop.GlobalData.Models
         public string Country { get; set; } = string.Empty;
         public int OrderId { get; set; }
         public Order? Order { get; set; }
-        public string UserId { get; set; } = string.Empty;
-        public User? User { get; set; }
     }
 }

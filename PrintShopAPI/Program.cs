@@ -1,15 +1,14 @@
-using PrintShop.DAL;
+using FluentValidation;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Options;
 using PrintShop.BLL;
 using PrintShop.BLL.Validation.UserValidations;
-using Serilog;
-using FluentValidation;
+using PrintShop.DAL;
+using PrintShop.GlobalData.Data;
 using PrintShop.GlobalData.Models.DTOs.UserDTOs;
 using PrintShopAPI.Middlewares;
-using PrintShop.GlobalData.Data;
-using Microsoft.Extensions.Options;
-using Microsoft.AspNetCore.Identity;
-using PrintShop.DAL.Context;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 

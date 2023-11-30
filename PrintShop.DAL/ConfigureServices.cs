@@ -12,18 +12,16 @@ namespace PrintShop.DAL
     public static class ConfigureServices
     {
         public static IServiceCollection DbServicesDAL(
-    this IServiceCollection services,
-    IConfiguration configuration)
+            this IServiceCollection services,
+            IConfiguration configuration)
         {
             services.AddDbContext<AppDbContext>(options =>
             options.UseNpgsql(configuration.GetConnectionString("LocalConnection")));
 
             services.AddScoped<IRepository<Product>, GeneralRepository<Product>>();
-            services.AddIdentity<User, IdentityRole>()
+            services.AddIdentity<User, Role>()
                 .AddEntityFrameworkStores<AppDbContext>()
                 .AddDefaultTokenProviders();
-
-
 
             return services;
         }
