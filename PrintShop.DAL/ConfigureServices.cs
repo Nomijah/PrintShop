@@ -19,7 +19,7 @@ namespace PrintShop.DAL
             options.UseNpgsql(configuration.GetConnectionString("LocalConnection")));
 
             services.AddScoped<IRepository<Product>, GeneralRepository<Product>>();
-            services.AddIdentity<User, Role>()
+            services.AddIdentity<User, IdentityRole<Guid>>()
                 .AddEntityFrameworkStores<AppDbContext>()
                 .AddDefaultTokenProviders();
 

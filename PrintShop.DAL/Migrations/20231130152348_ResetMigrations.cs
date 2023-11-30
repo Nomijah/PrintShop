@@ -448,9 +448,7 @@ namespace PrintShop.DAL.Migrations
                 columns: table => new
                 {
                     UserId = table.Column<Guid>(type: "uuid", nullable: false),
-                    RoleId = table.Column<Guid>(type: "uuid", nullable: false),
-                    UserId1 = table.Column<Guid>(type: "uuid", nullable: false),
-                    RoleId1 = table.Column<Guid>(type: "uuid", nullable: false)
+                    RoleId = table.Column<Guid>(type: "uuid", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -462,20 +460,8 @@ namespace PrintShop.DAL.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_UserRoles_Roles_RoleId1",
-                        column: x => x.RoleId1,
-                        principalTable: "Roles",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
                         name: "FK_UserRoles_Users_UserId",
                         column: x => x.UserId,
-                        principalTable: "Users",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_UserRoles_Users_UserId1",
-                        column: x => x.UserId1,
                         principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -598,9 +584,9 @@ namespace PrintShop.DAL.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "8dcd12c4-a9c8-4014-a7e7-640de65d3c8c", "3", "Creator", "CREATOR" },
-                    { "ad502a12-2aae-47e7-9a89-5c282b6fc3a5", "1", "Admin", "ADMIN" },
-                    { "d5ce4c52-3e50-4809-a078-4d68a2eb9f76", "2", "Customer", "CUSTOMER" }
+                    { "3ee80c76-4e52-479d-a3dd-767938dee0f1", "3", "Creator", "CREATOR" },
+                    { "878bdf23-2cc9-4028-848b-b1f45791572b", "2", "Customer", "CUSTOMER" },
+                    { "beab5cbb-876b-4b68-834e-5551f19714a8", "1", "Admin", "ADMIN" }
                 });
 
             migrationBuilder.InsertData(
@@ -737,16 +723,6 @@ namespace PrintShop.DAL.Migrations
                 name: "IX_UserRoles_RoleId",
                 table: "UserRoles",
                 column: "RoleId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_UserRoles_RoleId1",
-                table: "UserRoles",
-                column: "RoleId1");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_UserRoles_UserId1",
-                table: "UserRoles",
-                column: "UserId1");
 
             migrationBuilder.CreateIndex(
                 name: "EmailIndex",
