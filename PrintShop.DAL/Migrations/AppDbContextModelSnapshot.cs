@@ -43,21 +43,21 @@ namespace PrintShop.DAL.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "5819e763-2979-4695-97f6-0d05770f98bc",
+                            Id = "ad502a12-2aae-47e7-9a89-5c282b6fc3a5",
                             ConcurrencyStamp = "1",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "41b4a51e-3bd3-4720-8162-cff11c77a076",
+                            Id = "d5ce4c52-3e50-4809-a078-4d68a2eb9f76",
                             ConcurrencyStamp = "2",
                             Name = "Customer",
                             NormalizedName = "CUSTOMER"
                         },
                         new
                         {
-                            Id = "a5e04830-2aba-4918-abc0-2e31c9cfc95f",
+                            Id = "8dcd12c4-a9c8-4014-a7e7-640de65d3c8c",
                             ConcurrencyStamp = "3",
                             Name = "Creator",
                             NormalizedName = "CREATOR"
@@ -547,7 +547,7 @@ namespace PrintShop.DAL.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("PrintSize");
+                    b.ToTable("PrintSizes");
 
                     b.HasData(
                         new
@@ -769,7 +769,7 @@ namespace PrintShop.DAL.Migrations
 
                     b.HasKey("Name");
 
-                    b.ToTable("Tag");
+                    b.ToTable("Tags");
                 });
 
             modelBuilder.Entity("PrintShop.GlobalData.Models.User", b =>
@@ -852,20 +852,15 @@ namespace PrintShop.DAL.Migrations
 
             modelBuilder.Entity("PrintShop.GlobalData.Models.UserOrder", b =>
                 {
-                    b.Property<string>("UserId")
-                        .HasColumnType("text");
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
 
                     b.Property<int>("OrderId")
                         .HasColumnType("integer");
 
-                    b.Property<Guid?>("UserId1")
-                        .HasColumnType("uuid");
-
                     b.HasKey("UserId", "OrderId");
 
-                    b.HasIndex("UserId1");
-
-                    b.ToTable("UserOrder");
+                    b.ToTable("UserOrders");
                 });
 
             modelBuilder.Entity("PrintShop.GlobalData.Models.UserRole", b =>
@@ -1092,7 +1087,9 @@ namespace PrintShop.DAL.Migrations
                 {
                     b.HasOne("PrintShop.GlobalData.Models.User", null)
                         .WithMany("Orders")
-                        .HasForeignKey("UserId1");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("PrintShop.GlobalData.Models.UserRole", b =>

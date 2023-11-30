@@ -17,7 +17,12 @@ namespace PrintShop.DAL.Context
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
+            builder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
             base.OnModelCreating(builder);
+            //builder.Entity<IdentityRole>(entity =>
+            //{
+            //    entity.ToTable(name: "Roles");
+            //});
 
             foreach (var entityType in builder.Model.GetEntityTypes())
             {
@@ -28,7 +33,7 @@ namespace PrintShop.DAL.Context
                 }
             }
 
-            builder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
+
 
             builder.Entity<Favorite>().HasKey(f => new { f.PictureId, f.UserId });
             builder.Entity<UserOrder>().HasKey(c => new { c.UserId, c.OrderId });
@@ -52,10 +57,13 @@ namespace PrintShop.DAL.Context
         public DbSet<OrderRow> OrderRows { get; set; }
         public DbSet<Payment> Payments { get; set; }
         public DbSet<Picture> Pictures { get; set; }
+        public DbSet<PrintSize> PrintSizes { get; set; }
         public DbSet<Product> Products { get; set; }
         public DbSet<Shipment> Shipments { get; set; }
-        public DbSet<Variant> Variants { get; set; }
+        public DbSet<Tag> Tags { get; set; }
         public DbSet<UserCreatorId> UserCreatorIds { get; set; }
+        public DbSet<UserOrder> UserOrders { get; set; }
+        public DbSet<Variant> Variants { get; set; }
 
     }
 }

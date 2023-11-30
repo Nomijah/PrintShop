@@ -3,20 +3,18 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.6.33723.286
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PrintShopAPI", "PrintShopAPI\PrintShopAPI.csproj", "{CBC08980-763B-4730-92EB-D83201BDB1BF}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PrintShop.GlobalData", "PrintShop.Models\PrintShop.GlobalData.csproj", "{7A385B68-451C-4B45-8677-72C2EAAF9241}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PrintShop.BLL", "PrintShop.BLL\PrintShop.BLL.csproj", "{A61E300B-5D4D-455D-A165-CA77617DF6F6}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PrintShop.DAL", "PrintShop.DAL\PrintShop.DAL.csproj", "{84991E66-FFFF-49F8-9E56-FB5BCF87DAFE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PrintShop.Server", "PrintShop\Server\PrintShop.Server.csproj", "{308E8518-96A3-4F53-8F79-A833054E99E4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PrintShop.Server", "PrintShop\Server\PrintShop.Server.csproj", "{308E8518-96A3-4F53-8F79-A833054E99E4}"
 	ProjectSection(ProjectDependencies) = postProject
 		{84991E66-FFFF-49F8-9E56-FB5BCF87DAFE} = {84991E66-FFFF-49F8-9E56-FB5BCF87DAFE}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PrintShop.Client", "PrintShop\Client\PrintShop.Client.csproj", "{19DE56D3-0B06-4341-80FE-2172148610EB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PrintShop.Client", "PrintShop\Client\PrintShop.Client.csproj", "{19DE56D3-0B06-4341-80FE-2172148610EB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -24,10 +22,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{CBC08980-763B-4730-92EB-D83201BDB1BF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{CBC08980-763B-4730-92EB-D83201BDB1BF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{CBC08980-763B-4730-92EB-D83201BDB1BF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{CBC08980-763B-4730-92EB-D83201BDB1BF}.Release|Any CPU.Build.0 = Release|Any CPU
 		{7A385B68-451C-4B45-8677-72C2EAAF9241}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{7A385B68-451C-4B45-8677-72C2EAAF9241}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7A385B68-451C-4B45-8677-72C2EAAF9241}.Release|Any CPU.ActiveCfg = Release|Any CPU

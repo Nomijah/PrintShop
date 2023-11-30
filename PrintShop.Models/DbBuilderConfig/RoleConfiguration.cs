@@ -8,7 +8,14 @@ namespace PrintShop.GlobalData.DbBuilderConfig
     {
         public void Configure(EntityTypeBuilder<Role> builder)
         {
-            builder.ToTable($"{nameof(Role)}s").Property(r => r.Id).HasColumnName("RoleId");
+            builder.ToTable($"Roles");
+
+            builder.HasKey(r => r.Id);
+            builder.HasMany(r => r.UserRoles)
+                .WithOne(r => r.Role)
+                .HasForeignKey(r => r.RoleId)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }
