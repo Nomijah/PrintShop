@@ -1,5 +1,5 @@
 ﻿using FluentValidation;
-using PrintShop.GlobalData.Models.DTOs.PrintSizeDTOs;
+using PrintShop.GlobalData.Models.DTOs.GeneralDtos;
 
 namespace PrintShop.BLL.Validation.PrintSizeValidations
 {

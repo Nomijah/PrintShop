@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PrintShop.GlobalData.Models.DTOs.PrintSizeDTOs
+namespace PrintShop.GlobalData.Models.DTOs.GeneralDtos
 {
     public class PrintSizeCreateDto
     {

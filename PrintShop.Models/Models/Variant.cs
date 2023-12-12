@@ -10,6 +10,11 @@
         public Material? Material { get; set; }
         public int PrintSizeId { get; set; }
         public PrintSize? Size { get; set; }
-        public List<DiscountProduct>? Discounts { get; set; }
+        //public List<DiscountProduct>? Discounts { get; set; }
+
+        public Variant()
+        {
+            SKUPart = MaterialId.ToString() + PrintSizeId.ToString();
+        }
     }
 }

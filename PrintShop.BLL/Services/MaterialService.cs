@@ -1,22 +1,24 @@
 ﻿using Microsoft.AspNetCore.Http;
 using PrintShop.BLL.Services.Interfaces;
 using PrintShop.BLL.Validation.PrintSizeValidations;
-using PrintShop.DAL.Repositories;
 using PrintShop.GlobalData.Data;
-using PrintShop.GlobalData.Models;
 using PrintShop.GlobalData.Models.DTOs.GeneralDtos;
+using PrintShop.GlobalData.Models;
+using FluentValidation;
+using PrintShop.DAL.Repositories;
+using PrintShop.DAL.Repositories.Interfaces;
+using PrintShop.BLL.Validation.MaterialValidations;
 
 namespace PrintShop.BLL.Services
 {
-    public class PrintSizeService : IPrintSizeService
+    public class MaterialService : IMaterialService
     {
-        private readonly GeneralRepository<PrintSize> _printSizeRepo;
-
-        public PrintSizeService(GeneralRepository<PrintSize> printSizeRepo)
+        private readonly IRepository<Material> _materialRepo;
+        public MaterialService(IRepository<Material> materialRepo)
         {
-            _printSizeRepo = printSizeRepo;
+            _materialRepo = materialRepo;
         }
-        public async Task<ApiResponse> Create(PrintSizeCreateDto printSizeCreateDto)
+        public async Task<ApiResponse> Create(MaterialCreateDto materialCreateDto)
         {
             ApiResponse response = new ApiResponse()
             {
@@ -24,8 +26,8 @@ namespace PrintShop.BLL.Services
                 StatusCode = StatusCodes.Status400BadRequest
             };
 
-            var validator = new PrintSizeCreateValidator();
-            var validationResult = await validator.ValidateAsync(printSizeCreateDto);
+            var validator = new MaterialValidator();
+            var validationResult = await validator.ValidateAsync(materialCreateDto);
             if (!validationResult.IsValid)
             {
                 foreach (var item in validationResult.Errors.Select(x => x.ErrorMessage))
@@ -35,21 +37,27 @@ namespace PrintShop.BLL.Services
                 return response;
             }
 
-            var all = await _printSizeRepo.GetAllAsync();
-            foreach ( var item in all )
+            var all = await _materialRepo.GetAllAsync();
+            foreach (var item in all)
             {
-                if (printSizeCreateDto.Height == item.Height && printSizeCreateDto.Width == item.Width)
+                if (materialCreateDto.Name == item.Name)
                 {
-                    response.ErrorMessages.Add("This size is already in the database, duplicates are not allowed.");
+                    response.ErrorMessages.Add("This material is already in the database, duplicates are not allowed.");
                     return response;
                 }
             }
-            
-            await _printSizeRepo.AddAsync(new PrintSize(printSizeCreateDto.Height, printSizeCreateDto.Width));
+
+            var materialToAdd = new Material
+            {
+                Name = materialCreateDto.Name,
+                Description = materialCreateDto.Description,
+                IsActive = materialCreateDto.IsActive,
+            };
+            await _materialRepo.AddAsync(materialToAdd);
 
             response.IsSuccess = true;
             response.StatusCode = StatusCodes.Status201Created;
-            response.Result = "PrintSize created successfully.";
+            response.Result = "Material created successfully.";
             return response;
         }
 
@@ -61,19 +69,19 @@ namespace PrintShop.BLL.Services
                 StatusCode = StatusCodes.Status400BadRequest
             };
 
-            var printSizeToDelete = await _printSizeRepo.GetByIdAsync(id);
-            if (printSizeToDelete == null)
+            var materialToDelete = await _materialRepo.GetByIdAsync(id);
+            if (materialToDelete == null)
             {
                 response.ErrorMessages.Add("Id not found.");
                 response.StatusCode = StatusCodes.Status404NotFound;
                 return response;
             }
 
-            await _printSizeRepo.DeleteAsync(printSizeToDelete);
+            await _materialRepo.DeleteAsync(materialToDelete);
 
             response.IsSuccess = true;
             response.StatusCode = StatusCodes.Status200OK;
-            response.Result = "PrintSize deleted.";
+            response.Result = "Material deleted.";
             return response;
         }
 
@@ -85,7 +93,7 @@ namespace PrintShop.BLL.Services
                 StatusCode = StatusCodes.Status400BadRequest
             };
 
-            var result = await _printSizeRepo.GetByIdAsync(id);
+            var result = await _materialRepo.GetByIdAsync(id);
 
             if (result != null)
             {
@@ -106,7 +114,7 @@ namespace PrintShop.BLL.Services
                 IsSuccess = false,
                 StatusCode = StatusCodes.Status400BadRequest
             };
-            var result = await _printSizeRepo.GetAllAsync();
+            var result = await _materialRepo.GetAllAsync();
 
             if (result != null)
             {
@@ -118,7 +126,7 @@ namespace PrintShop.BLL.Services
             return response;
         }
 
-        public async Task<ApiResponse> Update(PrintSize size)
+        public async Task<ApiResponse> Update(Material material)
         {
             ApiResponse response = new ApiResponse()
             {
@@ -126,19 +134,19 @@ namespace PrintShop.BLL.Services
                 StatusCode = StatusCodes.Status400BadRequest
             };
 
-            var printSizeToUpdate = await _printSizeRepo.GetByIdAsync(size.Id);
-            if (printSizeToUpdate == null)
+            var materialToUpdate = await _materialRepo.GetByIdAsync(material.Id);
+            if (materialToUpdate == null)
             {
                 response.ErrorMessages.Add("Id not found.");
                 response.StatusCode = StatusCodes.Status404NotFound;
                 return response;
             }
 
-            printSizeToUpdate = size;
-            await _printSizeRepo.UpdateAsync(printSizeToUpdate);
+            materialToUpdate = material;
+            await _materialRepo.UpdateAsync(materialToUpdate);
             response.IsSuccess = true;
             response.StatusCode = StatusCodes.Status200OK;
-            response.Result = "PrintSize updated.";
+            response.Result = "Material updated.";
             return response;
         }
     }

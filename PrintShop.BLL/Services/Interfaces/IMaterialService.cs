@@ -4,12 +4,12 @@ using PrintShop.GlobalData.Models.DTOs.GeneralDtos;
 
 namespace PrintShop.BLL.Services.Interfaces
 {
-    public interface IPrintSizeService
+    public interface IMaterialService
     {
         public Task<ApiResponse> GetAll();
         public Task<ApiResponse> Get(int id);
-        public Task<ApiResponse> Create(PrintSizeCreateDto printSizeCreateDto);
-        public Task<ApiResponse> Update(PrintSize size);
+        public Task<ApiResponse> Create(MaterialCreateDto materialCreateDto);
+        public Task<ApiResponse> Update(Material material);
         public Task<ApiResponse> Delete(int id);
     }
 }
