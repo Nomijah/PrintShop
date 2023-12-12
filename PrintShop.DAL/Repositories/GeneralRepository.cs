@@ -1,11 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PrintShop.DAL.Context;
 using PrintShop.DAL.Repositories.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PrintShop.DAL.Repositories
 {
@@ -19,10 +14,11 @@ namespace PrintShop.DAL.Repositories
             _appDbContext = appDbContext;
             _dbSet = _appDbContext.Set<TEntity>();
         }
-        public async Task AddAsync(TEntity entity)
+        public async Task<TEntity> AddAsync(TEntity entity)
         {
             await _dbSet.AddAsync(entity);
             await _appDbContext.SaveChangesAsync();
+            return entity;
         }
 
         public async Task DeleteAsync(TEntity entity)
