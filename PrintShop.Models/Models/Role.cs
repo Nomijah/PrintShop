@@ -8,6 +8,6 @@ namespace PrintShop.GlobalData.Models
         {
 
         }
-        public ICollection<UserRole>? UserRoles { get; set; }
+        public ICollection<User>? Users { get; set; }
     }
 }

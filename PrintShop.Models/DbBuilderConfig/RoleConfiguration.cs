@@ -8,14 +8,12 @@ namespace PrintShop.GlobalData.DbBuilderConfig
     //{
     //    public void Configure(EntityTypeBuilder<Role> builder)
     //    {
-    //        builder.ToTable($"{nameof(Role)}s");
+    //        builder.ToTable($"Roles");
 
     //        builder.HasKey(r => r.Id);
     //        builder.HasMany(r => r.UserRoles)
     //            .WithOne(r => r.Role)
-    //            .HasForeignKey(r => r.RoleId)
-    //            .IsRequired()
-    //            .OnDelete(DeleteBehavior.Cascade);
+    //            .HasForeignKey(r => r.RoleId);
     //    }
     //}
 }

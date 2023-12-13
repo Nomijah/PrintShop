@@ -54,5 +54,13 @@ namespace PrintShopAPI.Controllers
             Log.Information("Response => {@response}", response);
             return response.IsSuccess ? Ok(response) : BadRequest(response);
         }
+
+        [HttpGet("GetUsersWithRoles")]
+        public async Task<IActionResult> GetUsersWithRoles()
+        {
+            var response = await _userService.GetAllWithRoles();
+            Log.Information("Response => {@response}", response);
+            return response.IsSuccess ? Ok(response) : BadRequest(response);
+        }
     }
 }

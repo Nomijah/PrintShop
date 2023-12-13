@@ -22,48 +22,6 @@ namespace PrintShop.DAL.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("text");
-
-                    b.Property<string>("ConcurrencyStamp")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("text");
-
-                    b.Property<string>("NormalizedName")
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("IdentityRole");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = "ad502a12-2aae-47e7-9a89-5c282b6fc3a5",
-                            ConcurrencyStamp = "1",
-                            Name = "Admin",
-                            NormalizedName = "ADMIN"
-                        },
-                        new
-                        {
-                            Id = "d5ce4c52-3e50-4809-a078-4d68a2eb9f76",
-                            ConcurrencyStamp = "2",
-                            Name = "Customer",
-                            NormalizedName = "CUSTOMER"
-                        },
-                        new
-                        {
-                            Id = "8dcd12c4-a9c8-4014-a7e7-640de65d3c8c",
-                            ConcurrencyStamp = "3",
-                            Name = "Creator",
-                            NormalizedName = "CREATOR"
-                        });
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
                 {
                     b.Property<int>("Id")
@@ -131,6 +89,21 @@ namespace PrintShop.DAL.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("UserLogins", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<System.Guid>", b =>
+                {
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("RoleId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("UserId", "RoleId");
+
+                    b.HasIndex("RoleId");
+
+                    b.ToTable("UserRoles", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<System.Guid>", b =>
@@ -719,6 +692,29 @@ namespace PrintShop.DAL.Migrations
                         .HasDatabaseName("RoleNameIndex");
 
                     b.ToTable("Roles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("3ee80c76-4e52-479d-a3dd-767938dee0f1"),
+                            ConcurrencyStamp = "1",
+                            Name = "Admin",
+                            NormalizedName = "ADMIN"
+                        },
+                        new
+                        {
+                            Id = new Guid("878bdf23-2cc9-4028-848b-b1f45791572b"),
+                            ConcurrencyStamp = "2",
+                            Name = "Customer",
+                            NormalizedName = "CUSTOMER"
+                        },
+                        new
+                        {
+                            Id = new Guid("beab5cbb-876b-4b68-834e-5551f19714a8"),
+                            ConcurrencyStamp = "3",
+                            Name = "Creator",
+                            NormalizedName = "CREATOR"
+                        });
                 });
 
             modelBuilder.Entity("PrintShop.GlobalData.Models.Shipment", b =>
@@ -863,31 +859,6 @@ namespace PrintShop.DAL.Migrations
                     b.ToTable("UserOrders");
                 });
 
-            modelBuilder.Entity("PrintShop.GlobalData.Models.UserRole", b =>
-                {
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("RoleId")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("RoleId1")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("UserId1")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("UserId", "RoleId");
-
-                    b.HasIndex("RoleId");
-
-                    b.HasIndex("RoleId1");
-
-                    b.HasIndex("UserId1");
-
-                    b.ToTable("UserRoles", (string)null);
-                });
-
             modelBuilder.Entity("PrintShop.GlobalData.Models.Variant", b =>
                 {
                     b.Property<int>("Id")
@@ -921,6 +892,21 @@ namespace PrintShop.DAL.Migrations
                     b.ToTable("Variants");
                 });
 
+            modelBuilder.Entity("RoleUser", b =>
+                {
+                    b.Property<Guid>("RolesId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("UsersId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("RolesId", "UsersId");
+
+                    b.HasIndex("UsersId");
+
+                    b.ToTable("RoleUser");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
                 {
                     b.HasOne("PrintShop.GlobalData.Models.Role", null)
@@ -941,6 +927,21 @@ namespace PrintShop.DAL.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<System.Guid>", b =>
                 {
+                    b.HasOne("PrintShop.GlobalData.Models.User", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<System.Guid>", b =>
+                {
+                    b.HasOne("PrintShop.GlobalData.Models.Role", null)
+                        .WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("PrintShop.GlobalData.Models.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
@@ -1092,37 +1093,6 @@ namespace PrintShop.DAL.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("PrintShop.GlobalData.Models.UserRole", b =>
-                {
-                    b.HasOne("PrintShop.GlobalData.Models.Role", null)
-                        .WithMany()
-                        .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("PrintShop.GlobalData.Models.Role", "Role")
-                        .WithMany("UserRoles")
-                        .HasForeignKey("RoleId1")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("PrintShop.GlobalData.Models.User", null)
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("PrintShop.GlobalData.Models.User", "User")
-                        .WithMany("UserRoles")
-                        .HasForeignKey("UserId1")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Role");
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("PrintShop.GlobalData.Models.Variant", b =>
                 {
                     b.HasOne("PrintShop.GlobalData.Models.Material", "Material")
@@ -1140,6 +1110,21 @@ namespace PrintShop.DAL.Migrations
                     b.Navigation("Material");
 
                     b.Navigation("Size");
+                });
+
+            modelBuilder.Entity("RoleUser", b =>
+                {
+                    b.HasOne("PrintShop.GlobalData.Models.Role", null)
+                        .WithMany()
+                        .HasForeignKey("RolesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("PrintShop.GlobalData.Models.User", null)
+                        .WithMany()
+                        .HasForeignKey("UsersId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("PrintShop.GlobalData.Models.Cart", b =>
@@ -1171,11 +1156,6 @@ namespace PrintShop.DAL.Migrations
                     b.Navigation("Discounts");
                 });
 
-            modelBuilder.Entity("PrintShop.GlobalData.Models.Role", b =>
-                {
-                    b.Navigation("UserRoles");
-                });
-
             modelBuilder.Entity("PrintShop.GlobalData.Models.User", b =>
                 {
                     b.Navigation("Cart");
@@ -1183,8 +1163,6 @@ namespace PrintShop.DAL.Migrations
                     b.Navigation("Favorites");
 
                     b.Navigation("Orders");
-
-                    b.Navigation("UserRoles");
                 });
 
             modelBuilder.Entity("PrintShop.GlobalData.Models.Variant", b =>

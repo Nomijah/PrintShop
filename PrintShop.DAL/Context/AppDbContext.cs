@@ -7,7 +7,7 @@ using System.Reflection.Emit;
 namespace PrintShop.DAL.Context
 {
     public class AppDbContext : IdentityDbContext<User, Role, Guid, IdentityUserClaim<Guid>,
-    UserRole, IdentityUserLogin<Guid>,
+    IdentityUserRole<Guid>, IdentityUserLogin<Guid>,
     IdentityRoleClaim<Guid>, IdentityUserToken<Guid>>
     {
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
@@ -17,12 +17,8 @@ namespace PrintShop.DAL.Context
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
-            builder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
+            //builder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
             base.OnModelCreating(builder);
-            //builder.Entity<IdentityRole>(entity =>
-            //{
-            //    entity.ToTable(name: "Roles");
-            //});
 
             foreach (var entityType in builder.Model.GetEntityTypes())
             {
