@@ -1,12 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using PrintShop.GlobalData.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Linq;
 
 namespace PrintShop.DAL.Context
 {
@@ -14,13 +7,13 @@ namespace PrintShop.DAL.Context
     {
         internal static void SeedRoles(ModelBuilder builder)
         {
-            builder.Entity<IdentityRole>().HasData(
-                new IdentityRole()
-                { Name = "Admin", ConcurrencyStamp = "1", NormalizedName = "ADMIN" },
-                new IdentityRole()
-                { Name = "Customer", ConcurrencyStamp = "2", NormalizedName = "CUSTOMER" },
-                new IdentityRole()
-                { Name = "Creator", ConcurrencyStamp = "3", NormalizedName = "CREATOR" });
+            builder.Entity<Role>().HasData(
+                new Role()
+                { Id = new Guid("3ee80c76-4e52-479d-a3dd-767938dee0f1") , Name = "Admin", ConcurrencyStamp = "1", NormalizedName = "ADMIN" },
+                new Role()
+                { Id = new Guid("878bdf23-2cc9-4028-848b-b1f45791572b"), Name = "Customer", ConcurrencyStamp = "2", NormalizedName = "CUSTOMER" },
+                new Role()
+                { Id = new Guid("beab5cbb-876b-4b68-834e-5551f19714a8"), Name = "Creator", ConcurrencyStamp = "3", NormalizedName = "CREATOR" });
         }
 
         internal static void SeedPrintSizes(ModelBuilder builder)

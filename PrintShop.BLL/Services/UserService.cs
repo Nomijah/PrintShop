@@ -279,14 +279,36 @@ namespace PrintShop.BLL.Services
             return response;
         }
 
-        //public async Task<ApiResponse> GetAllWithRoles()
-        //{
-        //    ApiResponse response = new ApiResponse()
-        //    {
-        //        IsSuccess = false,
-        //        StatusCode = StatusCodes.Status400BadRequest
-        //    };
-        //    var usersWithRoles = await _userManager.Users.Join(_userManager.);
-        //}
+        public async Task<ApiResponse> GetAllWithRoles()
+        {
+            ApiResponse response = new ApiResponse()
+            {
+                IsSuccess = false,
+                StatusCode = StatusCodes.Status400BadRequest
+            };
+            var usersWithRoles = await _userManager.Users.Include(u => u.Roles).ToListAsync();
+
+            var result = new List<UserWithRoleResponseDto>();
+            foreach (var user in usersWithRoles)
+            {
+                result.Add(new UserWithRoleResponseDto
+                {
+                    id = user.Id.ToString(),
+                    userName = user.UserName,
+                    email = user.Email,
+                    emailConfirmed = user.EmailConfirmed,
+                    roles = user.Roles
+                });
+            }
+
+            if (result != null)
+            {
+                response.IsSuccess = true;
+                response.StatusCode = StatusCodes.Status200OK;
+                response.Result = result;
+                return response;
+            }
+            return response;
+        }
     }
 }

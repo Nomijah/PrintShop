@@ -7,7 +7,7 @@ using System.Reflection.Emit;
 namespace PrintShop.DAL.Context
 {
     public class AppDbContext : IdentityDbContext<User, Role, Guid, IdentityUserClaim<Guid>,
-    UserRole, IdentityUserLogin<Guid>,
+    IdentityUserRole<Guid>, IdentityUserLogin<Guid>,
     IdentityRoleClaim<Guid>, IdentityUserToken<Guid>>
     {
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
@@ -17,6 +17,7 @@ namespace PrintShop.DAL.Context
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
+            //builder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
             base.OnModelCreating(builder);
 
             foreach (var entityType in builder.Model.GetEntityTypes())
@@ -28,7 +29,7 @@ namespace PrintShop.DAL.Context
                 }
             }
 
-            builder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
+
 
             builder.Entity<Favorite>().HasKey(f => new { f.PictureId, f.UserId });
             builder.Entity<UserOrder>().HasKey(c => new { c.UserId, c.OrderId });
@@ -52,10 +53,13 @@ namespace PrintShop.DAL.Context
         public DbSet<OrderRow> OrderRows { get; set; }
         public DbSet<Payment> Payments { get; set; }
         public DbSet<Picture> Pictures { get; set; }
+        public DbSet<PrintSize> PrintSizes { get; set; }
         public DbSet<Product> Products { get; set; }
         public DbSet<Shipment> Shipments { get; set; }
-        public DbSet<Variant> Variants { get; set; }
+        public DbSet<Tag> Tags { get; set; }
         public DbSet<UserCreatorId> UserCreatorIds { get; set; }
+        public DbSet<UserOrder> UserOrders { get; set; }
+        public DbSet<Variant> Variants { get; set; }
 
     }
 }

@@ -4,6 +4,10 @@ namespace PrintShop.GlobalData.Models
 {
     public class Role : IdentityRole<Guid>
     {
-        public ICollection<UserRole> UserRoles { get; set; }
+        public Role() : base()
+        {
+
+        }
+        public ICollection<User>? Users { get; set; }
     }
 }
