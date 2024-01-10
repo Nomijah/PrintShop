@@ -6,6 +6,7 @@
         public string? Size { get; set; } // String description of size, e.g. 50x100
         public int Height { get; set; }
         public int Width { get; set; }
+        public string SKUPart { get; set; }
 
         public PrintSize(int id, int height, int width)
         {
@@ -13,6 +14,7 @@
             Height = height;
             Width = width;
             Size = Convert.ToString(Height) + "x" + Convert.ToString(Width);
+            SKUPart = Height.ToString("D3") + Width.ToString("D3");
         }
     }
 }
