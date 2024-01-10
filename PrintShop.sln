@@ -10,11 +10,6 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PrintShop.DAL", "PrintShop.DAL\PrintShop.DAL.csproj", "{84991E66-FFFF-49F8-9E56-FB5BCF87DAFE}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Printshop.Api", "Printshop.Api\Printshop.Api.csproj", "{66E9D1C2-6789-4EF7-8CD0-C70C0D1D3A5C}"
-	ProjectSection(ProjectDependencies) = postProject
-		{7A385B68-451C-4B45-8677-72C2EAAF9241} = {7A385B68-451C-4B45-8677-72C2EAAF9241}
-		{84991E66-FFFF-49F8-9E56-FB5BCF87DAFE} = {84991E66-FFFF-49F8-9E56-FB5BCF87DAFE}
-		{A61E300B-5D4D-455D-A165-CA77617DF6F6} = {A61E300B-5D4D-455D-A165-CA77617DF6F6}
-	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
