@@ -33,6 +33,7 @@ namespace PrintShop.DAL.Context
             builder.Entity<Favorite>().HasKey(f => new { f.PictureId, f.UserId });
             builder.Entity<UserOrder>().HasKey(c => new { c.UserId, c.OrderId });
             builder.Entity<UserCreatorId>().HasKey(c => new { c.CreatorId, c.UserId });
+            builder.Entity<PictureTag>().HasKey(c => new { c.PictureId, c.TagId });
             builder.Entity<Tag>().HasKey(c => new { c.Name });
             SeedData.SeedRoles(builder);
             SeedData.SeedPrintSizes(builder);
@@ -44,14 +45,15 @@ namespace PrintShop.DAL.Context
         public DbSet<Cart> Carts { get; set; }
         public DbSet<CartItem> CartItems { get; set; }
         public DbSet<Category> Categories { get; set; }
-        public DbSet<Discount> Discounts { get; set; }
-        public DbSet<DiscountProduct> DiscountProducts { get; set; }
+        //public DbSet<Discount> Discounts { get; set; }
+        //public DbSet<DiscountProduct> DiscountProducts { get; set; }
         public DbSet<Favorite> Favorites { get; set; }
         public DbSet<Material> Materials { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderRow> OrderRows { get; set; }
         public DbSet<Payment> Payments { get; set; }
         public DbSet<Picture> Pictures { get; set; }
+        public DbSet<PictureTag> PictureTags { get; set; }
         public DbSet<Product> Products { get; set; }
         public DbSet<Shipment> Shipments { get; set; }
         public DbSet<Variant> Variants { get; set; }

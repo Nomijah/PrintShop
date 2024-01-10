@@ -3,7 +3,7 @@
     public class Picture
     {
         public int Id { get; set; }
-        public string SKUPart { get; set; } = string.Empty;
+        public string SKUPart => "PI" + Id.ToString("D4");
         public string CreatorIdentifier { get; set; } = string.Empty;
         public string Url { get; set; } = string.Empty;
         public string Title { get; set; } = string.Empty;
