@@ -361,6 +361,5 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
-/PrintShopAPI/appsettings.json
-/PrintShopAPI/appsettings.Development.json
-/PrintShop.Models/Models/User.cs
+/Printshop.Api/appsettings.json
+/Printshop.Api/appsettings.Development.json

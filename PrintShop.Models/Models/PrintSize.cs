@@ -8,8 +8,9 @@
         public int Width { get; set; }
         public string SKUPart { get; set; }
 
-        public PrintSize( int height, int width)
+        public PrintSize(int id, int height, int width)
         {
+            Id = id;
             Height = height;
             Width = width;
             Size = Convert.ToString(Height) + "x" + Convert.ToString(Width);
