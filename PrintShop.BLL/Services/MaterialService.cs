@@ -1,13 +1,10 @@
 ﻿using Microsoft.AspNetCore.Http;
 using PrintShop.BLL.Services.Interfaces;
-using PrintShop.BLL.Validation.PrintSizeValidations;
-using PrintShop.GlobalData.Data;
-using PrintShop.GlobalData.Models.DTOs.GeneralDtos;
-using PrintShop.GlobalData.Models;
-using FluentValidation;
-using PrintShop.DAL.Repositories;
-using PrintShop.DAL.Repositories.Interfaces;
 using PrintShop.BLL.Validation.MaterialValidations;
+using PrintShop.DAL.Repositories.Interfaces;
+using PrintShop.GlobalData.Data;
+using PrintShop.GlobalData.Models;
+using PrintShop.GlobalData.Models.DTOs.GeneralDtos;
 
 namespace PrintShop.BLL.Services
 {

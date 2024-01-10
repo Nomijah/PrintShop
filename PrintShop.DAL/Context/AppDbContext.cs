@@ -39,8 +39,8 @@ namespace PrintShop.DAL.Context
         public DbSet<Cart> Carts { get; set; }
         public DbSet<CartItem> CartItems { get; set; }
         public DbSet<Category> Categories { get; set; }
-        public DbSet<Discount> Discounts { get; set; }
-        public DbSet<DiscountProduct> DiscountProducts { get; set; }
+        //public DbSet<Discount> Discounts { get; set; }
+        //public DbSet<DiscountProduct> DiscountProducts { get; set; }
         public DbSet<Favorite> Favorites { get; set; }
         public DbSet<Material> Materials { get; set; }
         public DbSet<Order> Orders { get; set; }
