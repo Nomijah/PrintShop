@@ -363,3 +363,5 @@ MigrationBackup/
 FodyWeavers.xsd
 /Printshop.Api/appsettings.json
 /Printshop.Api/appsettings.Development.json
+/Printshop.Api/appsettings.json
+/Printshop.Api/appsettings.Development.json
