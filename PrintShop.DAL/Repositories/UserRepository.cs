@@ -1,18 +1,40 @@
-﻿using PrintShop.DAL.Repositories.Interfaces;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using PrintShop.DAL.Context;
+using PrintShop.DAL.Repositories.Interfaces;
 using PrintShop.GlobalData.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using PrintShop.GlobalData.Models.DTOs.ResponseDTOs;
 
 namespace PrintShop.DAL.Repositories
 {
     internal class UserRepository : IUserRepository
     {
-        public Task<IEnumerable<User>> GetAllWithRolesAsync()
+        private readonly AppDbContext _appDbContext;
+        private readonly UserManager<User> _userManager;
+        public UserRepository(AppDbContext appDbContext, UserManager<User> userManager)
         {
-            throw new NotImplementedException();
+            _appDbContext = appDbContext;
+            _userManager = userManager;
+        }
+
+        public async Task<IEnumerable<UserWithRoleResponseDto>> GetAllWithRolesAsync()
+        {
+            var users = await _userManager.Users.ToListAsync();
+            List<UserWithRoleResponseDto> result = new();
+            foreach (var user in users)
+            {
+                var roles = await _userManager.GetRolesAsync(user);
+                result.Add(new UserWithRoleResponseDto
+                {
+                    email = user.Email,
+                    emailConfirmed = user.EmailConfirmed,
+                    id = user.Id.ToString(),
+                    userName = user.UserName,
+                    roles = roles
+                });
+            }
+
+            return result;
         }
     }
 }

@@ -7,6 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using PrintShop.BLL.Services.Interfaces;
 using PrintShop.BLL.Validation.UserValidations;
+using PrintShop.DAL.Repositories.Interfaces;
 using PrintShop.GlobalData.Data;
 using PrintShop.GlobalData.Models;
 using PrintShop.GlobalData.Models.DTOs.ResponseDTOs;
@@ -23,14 +24,16 @@ namespace PrintShop.BLL.Services
         private readonly IEmailService _emailService;
         private readonly IUrlHelperFactory _urlHelperFactory;
         private readonly IConfiguration _configuration;
+        private readonly IUserRepository _userRepo;
 
-        public UserService(UserManager<User> userManager,
+        public UserService(UserManager<User> userManager, IUserRepository userRepo,
             IEmailService emailService, IUrlHelperFactory urlHelperFactory, IConfiguration configuration)
         {
             _userManager = userManager;
             _emailService = emailService;
             _urlHelperFactory = urlHelperFactory;
             _configuration = configuration;
+            _userRepo = userRepo;
         }
         public async Task<ApiResponse> RegisterNewUser(UserRegisterDto userRegisterDto, HttpContext httpContext)
         {
@@ -286,20 +289,7 @@ namespace PrintShop.BLL.Services
                 IsSuccess = false,
                 StatusCode = StatusCodes.Status400BadRequest
             };
-            var usersWithRoles = await _userManager.Users.Include(u => u.Roles).ToListAsync();
-
-            var result = new List<UserWithRoleResponseDto>();
-            foreach (var user in usersWithRoles)
-            {
-                result.Add(new UserWithRoleResponseDto
-                {
-                    id = user.Id.ToString(),
-                    userName = user.UserName,
-                    email = user.Email,
-                    emailConfirmed = user.EmailConfirmed,
-                    roles = user.Roles
-                });
-            }
+            var result = await _userRepo.GetAllWithRolesAsync();
 
             if (result != null)
             {

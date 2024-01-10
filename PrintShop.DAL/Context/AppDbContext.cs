@@ -17,9 +17,8 @@ namespace PrintShop.DAL.Context
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
-            //builder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
+            builder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
             base.OnModelCreating(builder);
-
             foreach (var entityType in builder.Model.GetEntityTypes())
             {
                 var tableName = entityType.GetTableName();
@@ -28,9 +27,6 @@ namespace PrintShop.DAL.Context
                     entityType.SetTableName(tableName.Substring(6));
                 }
             }
-
-
-
             builder.Entity<Favorite>().HasKey(f => new { f.PictureId, f.UserId });
             builder.Entity<UserOrder>().HasKey(c => new { c.UserId, c.OrderId });
             builder.Entity<UserCreatorId>().HasKey(c => new { c.CreatorId, c.UserId });
@@ -39,8 +35,6 @@ namespace PrintShop.DAL.Context
             SeedData.SeedPrintSizes(builder);
             SeedData.SeedMaterials(builder);
         }
-
-
 
         public DbSet<Cart> Carts { get; set; }
         public DbSet<CartItem> CartItems { get; set; }

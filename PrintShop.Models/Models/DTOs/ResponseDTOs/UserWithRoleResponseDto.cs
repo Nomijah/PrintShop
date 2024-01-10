@@ -6,6 +6,6 @@
         public string userName { get; set; }
         public string email { get; set; }
         public bool emailConfirmed { get; set; }
-        public ICollection<Role> roles { get; set; }
+        public ICollection<string> roles { get; set; }
     }
 }

@@ -5,7 +5,6 @@ namespace PrintShop.GlobalData.Models
 {
     public class User : IdentityUser<Guid>
     {
-        public ICollection<Role> Roles { get; set; }
         public Cart? Cart { get; set; }
         public List<UserOrder>? Orders { get; set; }
         public List<Favorite>? Favorites { get; set; }
