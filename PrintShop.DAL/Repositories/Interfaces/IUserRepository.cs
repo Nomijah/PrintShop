@@ -1,14 +1,9 @@
-﻿using PrintShop.GlobalData.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using PrintShop.GlobalData.Models.DTOs.ResponseDTOs;
 
 namespace PrintShop.DAL.Repositories.Interfaces
 {
     public interface IUserRepository
     {
-        Task<IEnumerable<User>> GetAllWithRolesAsync(); 
+        Task<IEnumerable<UserWithRoleResponseDto>> GetAllWithRolesAsync(); 
     }
 }
