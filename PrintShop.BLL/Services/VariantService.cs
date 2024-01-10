@@ -4,7 +4,7 @@ using PrintShop.BLL.Validation.VariantValidations;
 using PrintShop.DAL.Repositories.Interfaces;
 using PrintShop.GlobalData.Data;
 using PrintShop.GlobalData.Models;
-using PrintShop.GlobalData.Models.DTOs.GeneralDtos;
+using PrintShop.GlobalData.Models.DTOs.GenericDtos;
 
 namespace PrintShop.BLL.Services
 {
@@ -95,9 +95,17 @@ namespace PrintShop.BLL.Services
 
             if (result != null)
             {
+                var convertedResult = new VariantUpdateDto () 
+                {
+                    Id = result.Id,
+                    Description = result.Description, 
+                    Price = result.Price,
+                    MaterialId = result.MaterialId,
+                    PrintSizeId = result.PrintSizeId,
+                };
                 response.IsSuccess = true;
                 response.StatusCode = StatusCodes.Status200OK;
-                response.Result = result;
+                response.Result = convertedResult;
                 return response;
             }
 
@@ -112,10 +120,18 @@ namespace PrintShop.BLL.Services
                 IsSuccess = false,
                 StatusCode = StatusCodes.Status400BadRequest
             };
-            var result = await _variantRepo.GetAllAsync();
+            var variants = await _variantRepo.GetAllAsync();
 
-            if (result != null)
+            if (variants != null)
             {
+                var result = variants.Select(x => new VariantUpdateDto()
+                {
+                    Id = x.Id,
+                    Description = x.Description,
+                    Price = x.Price,
+                    MaterialId = x.MaterialId,
+                    PrintSizeId = x.PrintSizeId,
+                });
                 response.IsSuccess = true;
                 response.StatusCode = StatusCodes.Status200OK;
                 response.Result = result;
