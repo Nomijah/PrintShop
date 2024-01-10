@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using PrintShop.BLL.Services.Interfaces;
 using PrintShop.BLL.Validation.PrintSizeValidations;
-using PrintShop.DAL.Repositories;
+using PrintShop.DAL.Repositories.Interfaces;
 using PrintShop.GlobalData.Data;
 using PrintShop.GlobalData.Models;
 using PrintShop.GlobalData.Models.DTOs.GeneralDtos;
@@ -10,9 +10,9 @@ namespace PrintShop.BLL.Services
 {
     public class PrintSizeService : IPrintSizeService
     {
-        private readonly GeneralRepository<PrintSize> _printSizeRepo;
+        private readonly IRepository<PrintSize> _printSizeRepo;
 
-        public PrintSizeService(GeneralRepository<PrintSize> printSizeRepo)
+        public PrintSizeService(IRepository<PrintSize> printSizeRepo)
         {
             _printSizeRepo = printSizeRepo;
         }
@@ -45,7 +45,7 @@ namespace PrintShop.BLL.Services
                 }
             }
             
-            await _printSizeRepo.AddAsync(new PrintSize(printSizeCreateDto.Height, printSizeCreateDto.Width));
+            await _printSizeRepo.AddAsync(new PrintSize(printSizeCreateDto.Id, printSizeCreateDto.Height, printSizeCreateDto.Width));
 
             response.IsSuccess = true;
             response.StatusCode = StatusCodes.Status201Created;

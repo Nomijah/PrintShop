@@ -7,7 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="8.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.14" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.14">
@@ -25,7 +24,6 @@
   <ItemGroup>
     <ProjectReference Include="..\..\PrintShop.BLL\PrintShop.BLL.csproj" />
     <ProjectReference Include="..\..\PrintShop.Models\PrintShop.GlobalData.csproj" />
-    <ProjectReference Include="..\Client\PrintShop.Client.csproj" />
   </ItemGroup>
 
 

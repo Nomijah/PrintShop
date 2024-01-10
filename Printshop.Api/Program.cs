@@ -3,12 +3,12 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using PrintShop.BLL;
-using PrintShop.BLL.Validation.UserValidations;
 using PrintShop.DAL;
+using PrintShop.BLL.Validation.UserValidations;
 using PrintShop.GlobalData.Data;
 using PrintShop.GlobalData.Models.DTOs.UserDTOs;
-using PrintShopAPI.Middlewares;
 using Serilog;
+using PrintShop.Api.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -43,13 +43,12 @@ builder.Services.DbServicesDAL(builder.Configuration).DbServicesBLL(builder.Conf
 builder.Services.Configure<EmailConfiguration>(builder.Configuration.GetSection("EmailConfiguration"));
 builder.Services.AddSingleton(sp => sp.GetRequiredService<IOptions<EmailConfiguration>>().Value);
 
+
 // Configuration of Serilog
 Log.Logger = new LoggerConfiguration()
     .ReadFrom.Configuration(builder.Configuration)
     .CreateLogger();
 builder.Host.UseSerilog();
-
-
 
 var app = builder.Build();
 

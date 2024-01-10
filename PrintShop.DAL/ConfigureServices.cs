@@ -19,6 +19,8 @@ namespace PrintShop.DAL
             options.UseNpgsql(configuration.GetConnectionString("LocalConnection")));
 
             services.AddScoped<IRepository<Product>, GeneralRepository<Product>>();
+            services.AddScoped<IRepository<PrintSize>, GeneralRepository<PrintSize>>();
+            services.AddScoped<IRepository<Material>, GeneralRepository<Material>>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddIdentity<User, Role>()
                 .AddEntityFrameworkStores<AppDbContext>()
