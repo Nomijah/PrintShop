@@ -10,9 +10,17 @@ namespace PrintShop.BLL.Services
 {
     public class VariantService : IVariantService
     {
-        public readonly IRepository<Variant> _variantRepo;
-        public VariantService(IRepository<Variant> variantRepo)
+        public readonly IRepository<Variant> _variantGeneralRepo;
+        public readonly IVariantRepository _variantRepo;
+        public readonly IRepository<Material> _materialRepo;
+        public readonly IRepository<PrintSize> _printSizeRepo;
+        public VariantService(IRepository<Variant> variantGeneralRepo, 
+            IRepository<Material> materialRepo, IRepository<PrintSize> printSizeRepo,
+            IVariantRepository variantRepo)
         {
+            _variantGeneralRepo = variantGeneralRepo;
+            _materialRepo = materialRepo;
+            _printSizeRepo = printSizeRepo;
             _variantRepo = variantRepo;
         }
         public async Task<ApiResponse> Create(VariantCreateDto variantCreateDto)
@@ -34,7 +42,19 @@ namespace PrintShop.BLL.Services
                 return response;
             }
 
-            var all = await _variantRepo.GetAllAsync();
+            var material = await _materialRepo.GetByIdAsync(variantCreateDto.MaterialId);
+            var printSize = await _printSizeRepo.GetByIdAsync(variantCreateDto.PrintSizeId);
+            if (material == null || printSize == null)
+            {
+                if (material == null)
+                    response.ErrorMessages.Add("MaterialId not found");
+                if (printSize == null)
+                    response.ErrorMessages.Add("PrintSizeId not found");
+                response.StatusCode = StatusCodes.Status404NotFound;
+                return response;
+            }
+
+            var all = await _variantRepo.GetAllDtoAsync();
             foreach (var item in all)
             {
                 if (variantCreateDto.MaterialId == item.MaterialId && variantCreateDto.PrintSizeId == item.PrintSizeId)
@@ -49,9 +69,11 @@ namespace PrintShop.BLL.Services
                 Price = variantCreateDto.Price,
                 Description = variantCreateDto.Description,
                 PrintSizeId = variantCreateDto.PrintSizeId,
-                MaterialId  = variantCreateDto.MaterialId,
+                MaterialId = variantCreateDto.MaterialId,
+                Size = printSize,
+                Material = material,
             };
-            await _variantRepo.AddAsync(variantToAdd);
+            await _variantGeneralRepo.AddAsync(variantToAdd);
 
             response.IsSuccess = true;
             response.StatusCode = StatusCodes.Status201Created;
@@ -67,7 +89,7 @@ namespace PrintShop.BLL.Services
                 StatusCode = StatusCodes.Status400BadRequest
             };
 
-            var variantToDelete = await _variantRepo.GetByIdAsync(id);
+            var variantToDelete = await _variantGeneralRepo.GetByIdAsync(id);
             if (variantToDelete == null)
             {
                 response.ErrorMessages.Add("Id not found.");
@@ -75,7 +97,7 @@ namespace PrintShop.BLL.Services
                 return response;
             }
 
-            await _variantRepo.DeleteAsync(variantToDelete);
+            await _variantGeneralRepo.DeleteAsync(variantToDelete);
 
             response.IsSuccess = true;
             response.StatusCode = StatusCodes.Status200OK;
@@ -91,21 +113,13 @@ namespace PrintShop.BLL.Services
                 StatusCode = StatusCodes.Status400BadRequest
             };
 
-            var result = await _variantRepo.GetByIdAsync(id);
+            var result = await _variantRepo.GetDtoByIdAsync(id);
 
             if (result != null)
             {
-                var convertedResult = new VariantUpdateDto () 
-                {
-                    Id = result.Id,
-                    Description = result.Description, 
-                    Price = result.Price,
-                    MaterialId = result.MaterialId,
-                    PrintSizeId = result.PrintSizeId,
-                };
                 response.IsSuccess = true;
                 response.StatusCode = StatusCodes.Status200OK;
-                response.Result = convertedResult;
+                response.Result = result;
                 return response;
             }
 
@@ -120,18 +134,10 @@ namespace PrintShop.BLL.Services
                 IsSuccess = false,
                 StatusCode = StatusCodes.Status400BadRequest
             };
-            var variants = await _variantRepo.GetAllAsync();
+            var result = await _variantRepo.GetAllDtoAsync();
 
-            if (variants != null)
+            if (result != null)
             {
-                var result = variants.Select(x => new VariantUpdateDto()
-                {
-                    Id = x.Id,
-                    Description = x.Description,
-                    Price = x.Price,
-                    MaterialId = x.MaterialId,
-                    PrintSizeId = x.PrintSizeId,
-                });
                 response.IsSuccess = true;
                 response.StatusCode = StatusCodes.Status200OK;
                 response.Result = result;
@@ -148,7 +154,7 @@ namespace PrintShop.BLL.Services
                 StatusCode = StatusCodes.Status400BadRequest
             };
 
-            var variantToUpdate = await _variantRepo.GetByIdAsync(variantUpdateDto.Id);
+            var variantToUpdate = await _variantGeneralRepo.GetByIdAsync(variantUpdateDto.Id);
             if (variantToUpdate == null)
             {
                 response.ErrorMessages.Add("Id not found.");
@@ -161,7 +167,7 @@ namespace PrintShop.BLL.Services
             variantToUpdate.PrintSizeId = variantUpdateDto.PrintSizeId;
             variantToUpdate.MaterialId = variantUpdateDto.MaterialId;
 
-            await _variantRepo.UpdateAsync(variantToUpdate);
+            await _variantGeneralRepo.UpdateAsync(variantToUpdate);
             response.IsSuccess = true;
             response.StatusCode = StatusCodes.Status200OK;
             response.Result = "Variant updated.";

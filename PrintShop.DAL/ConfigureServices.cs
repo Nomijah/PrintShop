@@ -22,6 +22,7 @@ namespace PrintShop.DAL
             services.AddScoped<IRepository<PrintSize>, GeneralRepository<PrintSize>>();
             services.AddScoped<IRepository<Material>, GeneralRepository<Material>>();
             services.AddScoped<IRepository<Variant>, GeneralRepository<Variant>>();
+            services.AddScoped<IVariantRepository, VariantRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddIdentity<User, Role>()
                 .AddEntityFrameworkStores<AppDbContext>()
