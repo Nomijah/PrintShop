@@ -1,11 +1,4 @@
-﻿using PrintShop.GlobalData;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace PrintShop.DAL.Repositories.Interfaces
+﻿namespace PrintShop.DAL.Repositories.Interfaces
 {
     public interface IRepository<T>
     {

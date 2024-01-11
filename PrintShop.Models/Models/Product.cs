@@ -1,18 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore.Storage;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace PrintShop.GlobalData.Models
+﻿namespace PrintShop.GlobalData.Models
 {
     public class Product
     {
         public int Id { get; set; }
-        public string SKU => Picture.SKUPart + Variant.SKUPart;
+        public string SKU { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
         public int? PictureId { get; set; }
         public Picture Picture { get; set; } = null!;
@@ -21,5 +12,9 @@ namespace PrintShop.GlobalData.Models
         public decimal Price { get; set; }
         public bool IsActive { get; set; }
         //public List<DiscountProduct>? Discounts { get; set; }
+        public Product()
+        {
+            SKU = Picture.SKUPart + Variant.SKUPart;
+        }
     }
 }

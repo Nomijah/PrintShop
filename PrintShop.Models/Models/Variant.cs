@@ -3,7 +3,7 @@
     public class Variant
     {
         public int Id { get; set; }
-        public string SKUPart => MaterialId.ToString("D2") + Size.SKUPart;
+        public string SKUPart { get; set; }
         public decimal Price { get; set; }
         public string? Description { get; set; }
         public int MaterialId { get; set; }
@@ -11,5 +11,11 @@
         public int PrintSizeId { get; set; }
         public PrintSize Size { get; set; } = null!;
         //public List<DiscountProduct>? Discounts { get; set; }
+
+        public Variant()
+        {
+            SKUPart = MaterialId.ToString("D2") + Size.SKUPart;
+        }
+
     }
 }

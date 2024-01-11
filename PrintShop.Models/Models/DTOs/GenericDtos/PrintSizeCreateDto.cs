@@ -1,4 +1,4 @@
-﻿namespace PrintShop.GlobalData.Models.DTOs.GeneralDtos
+﻿namespace PrintShop.GlobalData.Models.DTOs.GenericDtos
 {
     public class PrintSizeCreateDto
     {

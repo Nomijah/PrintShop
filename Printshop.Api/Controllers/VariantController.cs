@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using PrintShop.BLL.Services.Interfaces;
-using PrintShop.GlobalData.Models.DTOs.GeneralDtos;
+using PrintShop.GlobalData.Models.DTOs.GenericDtos;
 using Serilog;
 
 namespace PrintShop.Server.Controllers

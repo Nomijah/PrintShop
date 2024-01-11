@@ -1,5 +1,5 @@
 ﻿using PrintShop.GlobalData.Data;
-using PrintShop.GlobalData.Models.DTOs.GeneralDtos;
+using PrintShop.GlobalData.Models.DTOs.GenericDtos;
 
 namespace PrintShop.BLL.Services.Interfaces
 {

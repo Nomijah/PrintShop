@@ -1,5 +1,5 @@
 ﻿using FluentValidation;
-using PrintShop.GlobalData.Models.DTOs.GeneralDtos;
+using PrintShop.GlobalData.Models.DTOs.GenericDtos;
 
 namespace PrintShop.BLL.Validation.VariantValidations
 {
