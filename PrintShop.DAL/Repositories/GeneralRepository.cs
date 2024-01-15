@@ -4,7 +4,7 @@ using PrintShop.DAL.Repositories.Interfaces;
 
 namespace PrintShop.DAL.Repositories
 {
-    public class GeneralRepository<TEntity> : IRepository<TEntity> where TEntity : class
+    internal class GeneralRepository<TEntity> : IRepository<TEntity> where TEntity : class
     {
         private readonly AppDbContext _appDbContext;
         private readonly DbSet<TEntity> _dbSet;
