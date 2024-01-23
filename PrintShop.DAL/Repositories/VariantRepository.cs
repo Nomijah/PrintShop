@@ -6,7 +6,7 @@ using PrintShop.GlobalData.Models.DTOs.GenericDtos;
 
 namespace PrintShop.DAL.Repositories
 {
-    public class VariantRepository : IVariantRepository
+    internal class VariantRepository : IVariantRepository
     {
         private readonly AppDbContext _context;
         public VariantRepository(AppDbContext context)

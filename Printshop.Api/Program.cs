@@ -9,6 +9,7 @@ using PrintShop.GlobalData.Data;
 using PrintShop.GlobalData.Models.DTOs.UserDTOs;
 using Serilog;
 using PrintShop.Api.Middlewares;
+using Azure.Storage.Blobs;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -43,6 +44,8 @@ builder.Services.DbServicesDAL(builder.Configuration).DbServicesBLL(builder.Conf
 builder.Services.Configure<EmailConfiguration>(builder.Configuration.GetSection("EmailConfiguration"));
 builder.Services.AddSingleton(sp => sp.GetRequiredService<IOptions<EmailConfiguration>>().Value);
 
+// Add blob storage service
+builder.Services.AddSingleton(x => new BlobServiceClient(builder.Configuration.GetConnectionString("AzureBlobConnectionString")));
 
 // Configuration of Serilog
 Log.Logger = new LoggerConfiguration()

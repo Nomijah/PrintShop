@@ -9,7 +9,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PrintShop.BLL", "PrintShop.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PrintShop.DAL", "PrintShop.DAL\PrintShop.DAL.csproj", "{84991E66-FFFF-49F8-9E56-FB5BCF87DAFE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Printshop.Api", "Printshop.Api\Printshop.Api.csproj", "{66E9D1C2-6789-4EF7-8CD0-C70C0D1D3A5C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Printshop.Api", "Printshop.Api\Printshop.Api.csproj", "{66E9D1C2-6789-4EF7-8CD0-C70C0D1D3A5C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{0177EA33-6BBE-495F-8CEA-FAD7F7B69D97}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -12,8 +12,8 @@ using PrintShop.DAL.Context;
 namespace PrintShop.DAL.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240111072602_SKUFix")]
-    partial class SKUFix
+    [Migration("20240116144006_InitMigration")]
+    partial class InitMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,6 +24,21 @@ namespace PrintShop.DAL.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
+
+            modelBuilder.Entity("CategoryPicture", b =>
+                {
+                    b.Property<int>("CategoriesId")
+                        .HasColumnType("integer");
+
+                    b.Property<Guid>("PicturesId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("CategoriesId", "PicturesId");
+
+                    b.HasIndex("PicturesId");
+
+                    b.ToTable("CategoryPicture");
+                });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
                 {
@@ -130,15 +145,15 @@ namespace PrintShop.DAL.Migrations
 
             modelBuilder.Entity("PictureTag", b =>
                 {
-                    b.Property<int>("PicturesId")
-                        .HasColumnType("integer");
+                    b.Property<Guid>("PicturesId")
+                        .HasColumnType("uuid");
 
-                    b.Property<string>("TagsName")
+                    b.Property<string>("TagsTitle")
                         .HasColumnType("text");
 
-                    b.HasKey("PicturesId", "TagsName");
+                    b.HasKey("PicturesId", "TagsTitle");
 
-                    b.HasIndex("TagsName");
+                    b.HasIndex("TagsTitle");
 
                     b.ToTable("PictureTag");
                 });
@@ -203,20 +218,15 @@ namespace PrintShop.DAL.Migrations
                     b.Property<int?>("ParentCategoryId")
                         .HasColumnType("integer");
 
-                    b.Property<int?>("PictureId")
-                        .HasColumnType("integer");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("PictureId");
 
                     b.ToTable("Categories");
                 });
 
             modelBuilder.Entity("PrintShop.GlobalData.Models.Favorite", b =>
                 {
-                    b.Property<int>("PictureId")
-                        .HasColumnType("integer");
+                    b.Property<Guid>("PictureId")
+                        .HasColumnType("uuid");
 
                     b.Property<Guid>("UserId")
                         .HasColumnType("uuid");
@@ -390,11 +400,9 @@ namespace PrintShop.DAL.Migrations
 
             modelBuilder.Entity("PrintShop.GlobalData.Models.Picture", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                        .HasColumnType("uuid");
 
                     b.Property<decimal>("BasePrice")
                         .HasColumnType("numeric");
@@ -435,19 +443,19 @@ namespace PrintShop.DAL.Migrations
 
             modelBuilder.Entity("PrintShop.GlobalData.Models.PictureTag", b =>
                 {
-                    b.Property<int>("PictureId")
-                        .HasColumnType("integer");
+                    b.Property<Guid>("PictureId")
+                        .HasColumnType("uuid");
 
                     b.Property<int>("TagId")
                         .HasColumnType("integer");
 
-                    b.Property<string>("TagName")
+                    b.Property<string>("TagTitle")
                         .IsRequired()
                         .HasColumnType("text");
 
                     b.HasKey("PictureId", "TagId");
 
-                    b.HasIndex("TagName");
+                    b.HasIndex("TagTitle");
 
                     b.ToTable("PictureTags");
                 });
@@ -615,8 +623,8 @@ namespace PrintShop.DAL.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("boolean");
 
-                    b.Property<int?>("PictureId")
-                        .HasColumnType("integer");
+                    b.Property<Guid?>("PictureId")
+                        .HasColumnType("uuid");
 
                     b.Property<decimal>("Price")
                         .HasColumnType("numeric");
@@ -730,10 +738,10 @@ namespace PrintShop.DAL.Migrations
 
             modelBuilder.Entity("PrintShop.GlobalData.Models.Tag", b =>
                 {
-                    b.Property<string>("Name")
+                    b.Property<string>("Title")
                         .HasColumnType("text");
 
-                    b.HasKey("Name");
+                    b.HasKey("Title");
 
                     b.ToTable("Tags");
                 });
@@ -862,6 +870,21 @@ namespace PrintShop.DAL.Migrations
                     b.ToTable("Variants");
                 });
 
+            modelBuilder.Entity("CategoryPicture", b =>
+                {
+                    b.HasOne("PrintShop.GlobalData.Models.Category", null)
+                        .WithMany()
+                        .HasForeignKey("CategoriesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("PrintShop.GlobalData.Models.Picture", null)
+                        .WithMany()
+                        .HasForeignKey("PicturesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
                 {
                     b.HasOne("PrintShop.GlobalData.Models.Role", null)
@@ -923,7 +946,7 @@ namespace PrintShop.DAL.Migrations
 
                     b.HasOne("PrintShop.GlobalData.Models.Tag", null)
                         .WithMany()
-                        .HasForeignKey("TagsName")
+                        .HasForeignKey("TagsTitle")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -956,13 +979,6 @@ namespace PrintShop.DAL.Migrations
                     b.Navigation("Cart");
 
                     b.Navigation("Product");
-                });
-
-            modelBuilder.Entity("PrintShop.GlobalData.Models.Category", b =>
-                {
-                    b.HasOne("PrintShop.GlobalData.Models.Picture", null)
-                        .WithMany("Categories")
-                        .HasForeignKey("PictureId");
                 });
 
             modelBuilder.Entity("PrintShop.GlobalData.Models.Favorite", b =>
@@ -1002,7 +1018,7 @@ namespace PrintShop.DAL.Migrations
 
                     b.HasOne("PrintShop.GlobalData.Models.Tag", "Tag")
                         .WithMany()
-                        .HasForeignKey("TagName")
+                        .HasForeignKey("TagTitle")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -1077,8 +1093,6 @@ namespace PrintShop.DAL.Migrations
 
             modelBuilder.Entity("PrintShop.GlobalData.Models.Picture", b =>
                 {
-                    b.Navigation("Categories");
-
                     b.Navigation("Products");
                 });
 

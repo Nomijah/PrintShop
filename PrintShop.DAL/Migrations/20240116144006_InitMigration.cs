@@ -9,29 +9,23 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace PrintShop.DAL.Migrations
 {
     /// <inheritdoc />
-    public partial class InitMigrate : Migration
+    public partial class InitMigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Discounts",
+                name: "Categories",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Name = table.Column<string>(type: "text", nullable: false),
-                    StartDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    EndDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    isActive = table.Column<bool>(type: "boolean", nullable: false),
-                    DiscountType = table.Column<int>(type: "integer", nullable: false),
-                    MinimumSpent = table.Column<decimal>(type: "numeric", nullable: false),
-                    MinimumItems = table.Column<decimal>(type: "numeric", nullable: false),
-                    AmountOff = table.Column<decimal>(type: "numeric", nullable: true)
+                    ParentCategoryId = table.Column<int>(type: "integer", nullable: true),
+                    Name = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Discounts", x => x.Id);
+                    table.PrimaryKey("PK_Categories", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -72,11 +66,10 @@ namespace PrintShop.DAL.Migrations
                 name: "Pictures",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
                     SKUPart = table.Column<string>(type: "text", nullable: false),
                     CreatorIdentifier = table.Column<string>(type: "text", nullable: false),
-                    url = table.Column<string>(type: "text", nullable: false),
+                    Url = table.Column<string>(type: "text", nullable: false),
                     Title = table.Column<string>(type: "text", nullable: false),
                     Description = table.Column<string>(type: "text", nullable: false),
                     Height = table.Column<int>(type: "integer", nullable: false),
@@ -97,7 +90,8 @@ namespace PrintShop.DAL.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Size = table.Column<string>(type: "text", nullable: true),
                     Height = table.Column<int>(type: "integer", nullable: false),
-                    Width = table.Column<int>(type: "integer", nullable: false)
+                    Width = table.Column<int>(type: "integer", nullable: false),
+                    SKUPart = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -122,11 +116,11 @@ namespace PrintShop.DAL.Migrations
                 name: "Tags",
                 columns: table => new
                 {
-                    Name = table.Column<string>(type: "text", nullable: false)
+                    Title = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Tags", x => x.Name);
+                    table.PrimaryKey("PK_Tags", x => x.Title);
                 });
 
             migrationBuilder.CreateTable(
@@ -240,23 +234,27 @@ namespace PrintShop.DAL.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Categories",
+                name: "CategoryPicture",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    ParentCategoryId = table.Column<int>(type: "integer", nullable: true),
-                    Name = table.Column<string>(type: "text", nullable: false),
-                    PictureId = table.Column<int>(type: "integer", nullable: true)
+                    CategoriesId = table.Column<int>(type: "integer", nullable: false),
+                    PicturesId = table.Column<Guid>(type: "uuid", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Categories", x => x.Id);
+                    table.PrimaryKey("PK_CategoryPicture", x => new { x.CategoriesId, x.PicturesId });
                     table.ForeignKey(
-                        name: "FK_Categories_Pictures_PictureId",
-                        column: x => x.PictureId,
+                        name: "FK_CategoryPicture_Categories_CategoriesId",
+                        column: x => x.CategoriesId,
+                        principalTable: "Categories",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_CategoryPicture_Pictures_PicturesId",
+                        column: x => x.PicturesId,
                         principalTable: "Pictures",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -313,12 +311,12 @@ namespace PrintShop.DAL.Migrations
                 name: "PictureTag",
                 columns: table => new
                 {
-                    PicturesId = table.Column<int>(type: "integer", nullable: false),
-                    TagsName = table.Column<string>(type: "text", nullable: false)
+                    PicturesId = table.Column<Guid>(type: "uuid", nullable: false),
+                    TagsTitle = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_PictureTag", x => new { x.PicturesId, x.TagsName });
+                    table.PrimaryKey("PK_PictureTag", x => new { x.PicturesId, x.TagsTitle });
                     table.ForeignKey(
                         name: "FK_PictureTag_Pictures_PicturesId",
                         column: x => x.PicturesId,
@@ -326,10 +324,35 @@ namespace PrintShop.DAL.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_PictureTag_Tags_TagsName",
-                        column: x => x.TagsName,
+                        name: "FK_PictureTag_Tags_TagsTitle",
+                        column: x => x.TagsTitle,
                         principalTable: "Tags",
-                        principalColumn: "Name",
+                        principalColumn: "Title",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PictureTags",
+                columns: table => new
+                {
+                    TagId = table.Column<int>(type: "integer", nullable: false),
+                    PictureId = table.Column<Guid>(type: "uuid", nullable: false),
+                    TagTitle = table.Column<string>(type: "text", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PictureTags", x => new { x.PictureId, x.TagId });
+                    table.ForeignKey(
+                        name: "FK_PictureTags_Pictures_PictureId",
+                        column: x => x.PictureId,
+                        principalTable: "Pictures",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_PictureTags_Tags_TagTitle",
+                        column: x => x.TagTitle,
+                        principalTable: "Tags",
+                        principalColumn: "Title",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -357,7 +380,7 @@ namespace PrintShop.DAL.Migrations
                 columns: table => new
                 {
                     UserId = table.Column<Guid>(type: "uuid", nullable: false),
-                    PictureId = table.Column<int>(type: "integer", nullable: false)
+                    PictureId = table.Column<Guid>(type: "uuid", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -481,7 +504,7 @@ namespace PrintShop.DAL.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     SKU = table.Column<string>(type: "text", nullable: false),
                     Description = table.Column<string>(type: "text", nullable: false),
-                    PictureId = table.Column<int>(type: "integer", nullable: true),
+                    PictureId = table.Column<Guid>(type: "uuid", nullable: true),
                     VariantId = table.Column<int>(type: "integer", nullable: true),
                     Price = table.Column<decimal>(type: "numeric", nullable: false),
                     IsActive = table.Column<bool>(type: "boolean", nullable: false)
@@ -528,43 +551,6 @@ namespace PrintShop.DAL.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
-            migrationBuilder.CreateTable(
-                name: "DiscountProducts",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    DiscountId = table.Column<int>(type: "integer", nullable: false),
-                    PictureId = table.Column<int>(type: "integer", nullable: true),
-                    ProductId = table.Column<int>(type: "integer", nullable: true),
-                    VariantId = table.Column<int>(type: "integer", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_DiscountProducts", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_DiscountProducts_Discounts_DiscountId",
-                        column: x => x.DiscountId,
-                        principalTable: "Discounts",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_DiscountProducts_Pictures_PictureId",
-                        column: x => x.PictureId,
-                        principalTable: "Pictures",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_DiscountProducts_Products_ProductId",
-                        column: x => x.ProductId,
-                        principalTable: "Products",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_DiscountProducts_Variants_VariantId",
-                        column: x => x.VariantId,
-                        principalTable: "Variants",
-                        principalColumn: "Id");
-                });
-
             migrationBuilder.InsertData(
                 table: "Materials",
                 columns: new[] { "Id", "Description", "IsActive", "Name" },
@@ -578,24 +564,24 @@ namespace PrintShop.DAL.Migrations
 
             migrationBuilder.InsertData(
                 table: "PrintSizes",
-                columns: new[] { "Id", "Height", "Size", "Width" },
+                columns: new[] { "Id", "Height", "SKUPart", "Size", "Width" },
                 values: new object[,]
                 {
-                    { 101, 30, "30x30", 30 },
-                    { 102, 50, "50x50", 50 },
-                    { 103, 70, "70x70", 70 },
-                    { 104, 100, "100x100", 100 },
-                    { 105, 150, "150x150", 150 },
-                    { 201, 30, "30x45", 45 },
-                    { 202, 50, "50x75", 75 },
-                    { 203, 70, "70x105", 105 },
-                    { 204, 100, "100x150", 150 },
-                    { 205, 150, "150x225", 225 },
-                    { 301, 45, "45x30", 30 },
-                    { 302, 75, "75x50", 50 },
-                    { 303, 105, "105x70", 70 },
-                    { 304, 150, "150x100", 100 },
-                    { 305, 225, "225x150", 150 }
+                    { 101, 30, "030030", "30x30", 30 },
+                    { 102, 50, "050050", "50x50", 50 },
+                    { 103, 70, "070070", "70x70", 70 },
+                    { 104, 100, "100100", "100x100", 100 },
+                    { 105, 150, "150150", "150x150", 150 },
+                    { 201, 30, "030045", "30x45", 45 },
+                    { 202, 50, "050075", "50x75", 75 },
+                    { 203, 70, "070105", "70x105", 105 },
+                    { 204, 100, "100150", "100x150", 150 },
+                    { 205, 150, "150225", "150x225", 225 },
+                    { 301, 45, "045030", "45x30", 30 },
+                    { 302, 75, "075050", "75x50", 50 },
+                    { 303, 105, "105070", "105x70", 70 },
+                    { 304, 150, "150100", "150x100", 100 },
+                    { 305, 225, "225150", "225x150", 150 }
                 });
 
             migrationBuilder.InsertData(
@@ -625,29 +611,9 @@ namespace PrintShop.DAL.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Categories_PictureId",
-                table: "Categories",
-                column: "PictureId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_DiscountProducts_DiscountId",
-                table: "DiscountProducts",
-                column: "DiscountId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_DiscountProducts_PictureId",
-                table: "DiscountProducts",
-                column: "PictureId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_DiscountProducts_ProductId",
-                table: "DiscountProducts",
-                column: "ProductId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_DiscountProducts_VariantId",
-                table: "DiscountProducts",
-                column: "VariantId");
+                name: "IX_CategoryPicture_PicturesId",
+                table: "CategoryPicture",
+                column: "PicturesId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Favorites_UserId",
@@ -665,9 +631,14 @@ namespace PrintShop.DAL.Migrations
                 column: "OrderId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_PictureTag_TagsName",
+                name: "IX_PictureTag_TagsTitle",
                 table: "PictureTag",
-                column: "TagsName");
+                column: "TagsTitle");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PictureTags_TagTitle",
+                table: "PictureTags",
+                column: "TagTitle");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Products_PictureId",
@@ -739,10 +710,7 @@ namespace PrintShop.DAL.Migrations
                 name: "CartItems");
 
             migrationBuilder.DropTable(
-                name: "Categories");
-
-            migrationBuilder.DropTable(
-                name: "DiscountProducts");
+                name: "CategoryPicture");
 
             migrationBuilder.DropTable(
                 name: "Favorites");
@@ -755,6 +723,9 @@ namespace PrintShop.DAL.Migrations
 
             migrationBuilder.DropTable(
                 name: "PictureTag");
+
+            migrationBuilder.DropTable(
+                name: "PictureTags");
 
             migrationBuilder.DropTable(
                 name: "RoleClaims");
@@ -784,10 +755,10 @@ namespace PrintShop.DAL.Migrations
                 name: "Carts");
 
             migrationBuilder.DropTable(
-                name: "Discounts");
+                name: "Products");
 
             migrationBuilder.DropTable(
-                name: "Products");
+                name: "Categories");
 
             migrationBuilder.DropTable(
                 name: "Tags");

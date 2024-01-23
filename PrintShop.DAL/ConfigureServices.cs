@@ -21,12 +21,15 @@ namespace PrintShop.DAL
             services.AddScoped<IRepository<Product>, GeneralRepository<Product>>();
             services.AddScoped<IRepository<PrintSize>, GeneralRepository<PrintSize>>();
             services.AddScoped<IRepository<Material>, GeneralRepository<Material>>();
+            services.AddScoped<IRepository<Picture>, GeneralRepository<Picture>>();
             services.AddScoped<IRepository<Variant>, GeneralRepository<Variant>>();
+            services.AddScoped<IPictureRepository, PictureRepository>();
             services.AddScoped<IVariantRepository, VariantRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddIdentity<User, Role>()
                 .AddEntityFrameworkStores<AppDbContext>()
                 .AddDefaultTokenProviders();
+
 
             return services;
         }

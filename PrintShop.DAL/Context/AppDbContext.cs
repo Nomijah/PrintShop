@@ -31,7 +31,7 @@ namespace PrintShop.DAL.Context
             builder.Entity<UserOrder>().HasKey(c => new { c.UserId, c.OrderId });
             builder.Entity<UserCreatorId>().HasKey(c => new { c.CreatorId, c.UserId });
             builder.Entity<PictureTag>().HasKey(c => new { c.PictureId, c.TagId });
-            builder.Entity<Tag>().HasKey(c => new { c.Name });
+            builder.Entity<Tag>().HasKey(c => new { c.Title });
             SeedData.SeedRoles(builder);
             SeedData.SeedPrintSizes(builder);
             SeedData.SeedMaterials(builder);
