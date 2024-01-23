@@ -8,7 +8,7 @@ namespace PrintShop.BLL
 
         public static string GetContentType(this string fileName)
         {
-            if(Provider.TryGetContentType(fileName, out var contentType))
+            if(!Provider.TryGetContentType(fileName, out var contentType))
             {
                 contentType = "application/octet-stream";
             }

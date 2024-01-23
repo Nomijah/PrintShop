@@ -5,5 +5,6 @@
         public int Id { get; set; }
         public int? ParentCategoryId { get; set; } // Null if top level category
         public string Name { get; set; } = string.Empty;
+        public ICollection<Picture> Pictures { get; set; }
     }
 }

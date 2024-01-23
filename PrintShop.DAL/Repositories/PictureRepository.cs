@@ -1,44 +1,28 @@
-﻿using PrintShop.DAL.Repositories.Interfaces;
+﻿using PrintShop.DAL.Context;
+using PrintShop.DAL.Repositories.Interfaces;
 using PrintShop.GlobalData.Models;
-using PrintShop.GlobalData.Models.DTOs.GenericDtos;
+using Microsoft.EntityFrameworkCore;
 
 namespace PrintShop.DAL.Repositories
 {
     internal class PictureRepository : IPictureRepository
     {
-        public Task<Picture> AddAsync(PictureUploadDto pictureUploadDto)
+        private readonly AppDbContext _appDbContext;
+
+        public PictureRepository(AppDbContext appDbContext)
         {
-            throw new NotImplementedException();
+            _appDbContext = appDbContext;
         }
 
-        public Task AddCategoryAsync(int categoryId)
+        public async Task<Picture?> GetByIdAsync(Guid id)
         {
-            throw new NotImplementedException();
+            return await _appDbContext.Pictures.FindAsync(id);
         }
 
-        public Task AddTagAsync(int tagId)
+        public async Task<Picture?> GetBySKUAsync(string skuPart)
         {
-            throw new NotImplementedException();
-        }
-
-        public Task DeleteAsync(int id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<IEnumerable<Picture>> GetAllAsync()
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<Picture> GetByIdAsync()
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task UpdateAsync(Picture picture)
-        {
-            throw new NotImplementedException();
+            return await _appDbContext.Pictures
+                .FirstOrDefaultAsync(p =>  p.SKUPart == skuPart);
         }
     }
 }

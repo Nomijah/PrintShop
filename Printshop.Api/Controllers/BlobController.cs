@@ -16,9 +16,9 @@ namespace Printshop.Api.Controllers
         }
 
         [HttpGet("GetByFileName")]
-        public async Task<IActionResult> GetByFileName(string name)
+        public IActionResult GetByFileName(string name)
         {
-            var response = await _blobService.GetBlobSASTokenAsync(name);
+            var response = _blobService.GetBlobSASTokenAsync(name);
             Log.Information("Response => {@response}", response);
             return response != null ? Ok(response) : BadRequest(response);
         }
@@ -31,10 +31,34 @@ namespace Printshop.Api.Controllers
             return response != null ? Ok(response) : BadRequest(response);
         }
 
-        [HttpPost("UploadFile")]
-        public async Task<IActionResult> UploadFile(string path, string name)
+        [HttpGet("GetAllBlobs")]
+        public async Task<IActionResult> GetAllBlobs()
         {
-            var response = await _blobService.UploadFileAsync(path, name);
+            var response = await _blobService.GetUploadedBlobsAsync();
+            Log.Information("Response => {@response}", response);
+            return response != null ? Ok(response) : BadRequest(response);
+        }
+
+        [HttpPost("UploadFileViaPath")]
+        public async Task<IActionResult> UploadFileViaPath(string path, string name)
+        {
+            var response = await _blobService.UploadFileViaPathAsync(path, name);
+            Log.Information("Response => {@response}", response);
+            return response != null ? Ok(response) : BadRequest(response);
+        }
+
+        [HttpPost("UploadSingleFile")]
+        public async Task<IActionResult> UploadSingleFile(IFormFile file, string name)
+        {
+            var response = await _blobService.UploadSingleFileAsync(file, name);
+            Log.Information("Response => {@response}", response);
+            return response != null ? Ok(response) : BadRequest(response);
+        }
+
+        [HttpPost("UploadFiles")]
+        public async Task<IActionResult> UploadFiles(ICollection<IFormFile> files)
+        {
+            var response = await _blobService.UploadFilesAsync(files);
             Log.Information("Response => {@response}", response);
             return response != null ? Ok(response) : BadRequest(response);
         }
