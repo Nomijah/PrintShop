@@ -123,19 +123,22 @@ namespace PrintShop.BLL.Services
 
         public async Task<Tuple<bool,string>> DeletePictureAsync(string id)
         {
-            var blobClient1 = _containerClient.GetBlobClient(id + ".tiff");
+            var blobClient1 = _containerClient.GetBlobClient(id);
             var blobContainer = _blobServiceClient.GetBlobContainerClient(_configuration.GetSection("AzureStorage:WebPicContainer").Value);
             var blobClient2 = blobContainer.GetBlobClient(id + _configuration.GetSection("GeneratedFileNameExtensions:Large").Value);
             var blobClient3 = blobContainer.GetBlobClient(id + _configuration.GetSection("GeneratedFileNameExtensions:Small").Value);
             // Check that all blobs are present in storage
-            if (await blobClient1.ExistsAsync() && await blobClient2.ExistsAsync() && await blobClient3.ExistsAsync())
+            bool blobExists1 = await blobClient1.ExistsAsync();
+            bool blobExists2 = await blobClient2.ExistsAsync();
+            bool blobExists3 = await blobClient3.ExistsAsync();
+            if (blobExists1 && blobExists2 && blobExists3)
             {
                 await blobClient1.DeleteAsync();
                 await blobClient2.DeleteAsync();
                 await blobClient3.DeleteAsync();
                 return new Tuple<bool, string>( true, "All versions of picture deleted." );
             }
-            return new Tuple<bool, string>(true, "One or more files not found in blob storage.");
+            return new Tuple<bool, string>(false, "One or more files not found in blob storage.");
         }
     }
 }

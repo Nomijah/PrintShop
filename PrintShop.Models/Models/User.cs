@@ -8,5 +8,6 @@ namespace PrintShop.GlobalData.Models
         public Cart? Cart { get; set; }
         public List<UserOrder>? Orders { get; set; }
         public List<Favorite>? Favorites { get; set; }
+        public CreatorId? CreatorId { get; set; }
     }
 }

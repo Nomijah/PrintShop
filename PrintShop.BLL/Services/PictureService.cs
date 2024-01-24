@@ -51,7 +51,7 @@ namespace PrintShop.BLL.Services
             {
                 Id = Guid.NewGuid(),
                 SKUPart = skuPart,
-                CreatorIdentifier = pictureUploadDto.CreatorIdentifier,
+                CreatorId = pictureUploadDto.CreatorIdentifier,
                 Title = pictureUploadDto.Title,
                 Description = pictureUploadDto.Description,
                 BasePrice = pictureUploadDto.BasePrice,
@@ -87,14 +87,14 @@ namespace PrintShop.BLL.Services
                 }
             }
 
-            // Get file suffix for naming blob
-            var fileType = pictureUploadDto.File.FileName.GetContentType();
-            if (fileType == "image/tiff")
-                fileType = ".tiff";                  // Eventually remove this later, should only expect Tiff-file.
-            else
-                fileType = ".jpg";
+            //// Get file suffix for naming blob
+            //var fileType = pictureUploadDto.File.FileName.GetContentType();
+            //if (fileType == "image/tiff")
+            //    fileType = ".tiff";                  // Eventually remove this later, should only expect Tiff-file.
+            //else
+            //    fileType = ".jpg";
 
-            var blobData = _blobService.UploadSingleFileAsync(pictureUploadDto.File, pictureToAdd.Id.ToString() + fileType);
+            var blobData = _blobService.UploadSingleFileAsync(pictureUploadDto.File, pictureToAdd.Id.ToString());
 
             if (blobData == null)
             {

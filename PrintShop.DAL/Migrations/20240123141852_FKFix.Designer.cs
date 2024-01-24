@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using PrintShop.DAL.Context;
@@ -11,9 +12,11 @@ using PrintShop.DAL.Context;
 namespace PrintShop.DAL.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240123141852_FKFix")]
+    partial class FKFix
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -225,22 +228,12 @@ namespace PrintShop.DAL.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("text");
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Presentation")
-                        .HasColumnType("text");
-
                     b.Property<Guid>("UserId")
                         .HasColumnType("uuid");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId")
-                        .IsUnique();
-
-                    b.ToTable("CreatorIds");
+                    b.ToTable("UserCreatorIds");
                 });
 
             modelBuilder.Entity("PrintShop.GlobalData.Models.Favorite", b =>
@@ -431,9 +424,6 @@ namespace PrintShop.DAL.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("CreatorIdId")
-                        .HasColumnType("text");
-
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("text");
@@ -460,8 +450,6 @@ namespace PrintShop.DAL.Migrations
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CreatorIdId");
 
                     b.ToTable("Pictures");
                 });
@@ -976,17 +964,6 @@ namespace PrintShop.DAL.Migrations
                     b.Navigation("Product");
                 });
 
-            modelBuilder.Entity("PrintShop.GlobalData.Models.CreatorId", b =>
-                {
-                    b.HasOne("PrintShop.GlobalData.Models.User", "User")
-                        .WithOne("CreatorId")
-                        .HasForeignKey("PrintShop.GlobalData.Models.CreatorId", "UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("PrintShop.GlobalData.Models.Favorite", b =>
                 {
                     b.HasOne("PrintShop.GlobalData.Models.User", null)
@@ -1012,13 +989,6 @@ namespace PrintShop.DAL.Migrations
                         .IsRequired();
 
                     b.Navigation("Order");
-                });
-
-            modelBuilder.Entity("PrintShop.GlobalData.Models.Picture", b =>
-                {
-                    b.HasOne("PrintShop.GlobalData.Models.CreatorId", null)
-                        .WithMany("Pictures")
-                        .HasForeignKey("CreatorIdId");
                 });
 
             modelBuilder.Entity("PrintShop.GlobalData.Models.Product", b =>
@@ -1090,11 +1060,6 @@ namespace PrintShop.DAL.Migrations
                     b.Navigation("CartItems");
                 });
 
-            modelBuilder.Entity("PrintShop.GlobalData.Models.CreatorId", b =>
-                {
-                    b.Navigation("Pictures");
-                });
-
             modelBuilder.Entity("PrintShop.GlobalData.Models.Order", b =>
                 {
                     b.Navigation("OrderRows");
@@ -1108,8 +1073,6 @@ namespace PrintShop.DAL.Migrations
             modelBuilder.Entity("PrintShop.GlobalData.Models.User", b =>
                 {
                     b.Navigation("Cart");
-
-                    b.Navigation("CreatorId");
 
                     b.Navigation("Favorites");
 

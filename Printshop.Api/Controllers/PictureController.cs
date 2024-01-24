@@ -34,7 +34,7 @@ namespace Printshop.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetPicture(string id)
+        public async Task<IActionResult> GetPicture(Guid id)
         {
             var response = await _pictureService.Get(id);
             Log.Information("Response => {@response}", response);
