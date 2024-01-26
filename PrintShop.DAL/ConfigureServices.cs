@@ -18,12 +18,12 @@ namespace PrintShop.DAL
             services.AddDbContext<AppDbContext>(options =>
             options.UseNpgsql(configuration.GetConnectionString("LocalConnection")));
 
-            services.AddScoped<IRepository<Product>, GeneralRepository<Product>>();
-            services.AddScoped<IRepository<PrintSize>, GeneralRepository<PrintSize>>();
-            services.AddScoped<IRepository<Material>, GeneralRepository<Material>>();
-            services.AddScoped<IRepository<Picture>, GeneralRepository<Picture>>();
-            services.AddScoped<IRepository<Variant>, GeneralRepository<Variant>>();
-            services.AddScoped<IRepository<CreatorId>, GeneralRepository<CreatorId>>();
+            services.AddScoped<IRepository<Product>, GenericRepository<Product>>();
+            services.AddScoped<IRepository<PrintSize>, GenericRepository<PrintSize>>();
+            services.AddScoped<IRepository<Material>, GenericRepository<Material>>();
+            services.AddScoped<IRepository<Picture>, GenericRepository<Picture>>();
+            services.AddScoped<IRepository<Variant>, GenericRepository<Variant>>();
+            services.AddScoped<IRepository<CreatorId>, GenericRepository<CreatorId>>();
             services.AddScoped<IPictureRepository, PictureRepository>();
             services.AddScoped<IVariantRepository, VariantRepository>();
             services.AddScoped<IUserRepository, UserRepository>();

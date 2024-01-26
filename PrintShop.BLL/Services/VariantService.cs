@@ -10,15 +10,15 @@ namespace PrintShop.BLL.Services
 {
     public class VariantService : IVariantService
     {
-        public readonly IRepository<Variant> _variantGeneralRepo;
+        public readonly IRepository<Variant> _variantGenericRepo;
         public readonly IVariantRepository _variantRepo;
         public readonly IRepository<Material> _materialRepo;
         public readonly IRepository<PrintSize> _printSizeRepo;
-        public VariantService(IRepository<Variant> variantGeneralRepo, 
+        public VariantService(IRepository<Variant> variantGenericRepo, 
             IRepository<Material> materialRepo, IRepository<PrintSize> printSizeRepo,
             IVariantRepository variantRepo)
         {
-            _variantGeneralRepo = variantGeneralRepo;
+            _variantGenericRepo = variantGenericRepo;
             _materialRepo = materialRepo;
             _printSizeRepo = printSizeRepo;
             _variantRepo = variantRepo;
@@ -73,7 +73,7 @@ namespace PrintShop.BLL.Services
                 Size = printSize,
                 Material = material,
             };
-            await _variantGeneralRepo.AddAsync(variantToAdd);
+            await _variantGenericRepo.AddAsync(variantToAdd);
 
             response.IsSuccess = true;
             response.StatusCode = StatusCodes.Status201Created;
@@ -89,7 +89,7 @@ namespace PrintShop.BLL.Services
                 StatusCode = StatusCodes.Status400BadRequest
             };
 
-            var variantToDelete = await _variantGeneralRepo.GetByIdAsync(id);
+            var variantToDelete = await _variantGenericRepo.GetByIdAsync(id);
             if (variantToDelete == null)
             {
                 response.ErrorMessages.Add("Id not found.");
@@ -97,7 +97,7 @@ namespace PrintShop.BLL.Services
                 return response;
             }
 
-            await _variantGeneralRepo.DeleteAsync(variantToDelete);
+            await _variantGenericRepo.DeleteAsync(variantToDelete);
 
             response.IsSuccess = true;
             response.StatusCode = StatusCodes.Status200OK;
@@ -154,7 +154,7 @@ namespace PrintShop.BLL.Services
                 StatusCode = StatusCodes.Status400BadRequest
             };
 
-            var variantToUpdate = await _variantGeneralRepo.GetByIdAsync(variantUpdateDto.Id);
+            var variantToUpdate = await _variantGenericRepo.GetByIdAsync(variantUpdateDto.Id);
             if (variantToUpdate == null)
             {
                 response.ErrorMessages.Add("Id not found.");
@@ -167,7 +167,7 @@ namespace PrintShop.BLL.Services
             variantToUpdate.PrintSizeId = variantUpdateDto.PrintSizeId;
             variantToUpdate.MaterialId = variantUpdateDto.MaterialId;
 
-            await _variantGeneralRepo.UpdateAsync(variantToUpdate);
+            await _variantGenericRepo.UpdateAsync(variantToUpdate);
             response.IsSuccess = true;
             response.StatusCode = StatusCodes.Status200OK;
             response.Result = "Variant updated.";
