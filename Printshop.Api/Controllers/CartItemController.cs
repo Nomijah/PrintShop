@@ -7,50 +7,51 @@ namespace Printshop.Api.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class CreatorIdController : ControllerBase
+    public class CartItemController : ControllerBase
     {
-        private readonly ICreatorIdService _creatorIdService;
-        public CreatorIdController(ICreatorIdService creatorIdService)
+        private readonly ICartItemService _cartItemService;
+
+        public CartItemController(ICartItemService cartItemService)
         {
-            _creatorIdService = creatorIdService;
+            _cartItemService = cartItemService;
         }
 
         [HttpGet("GetAll")]
         public async Task<IActionResult> GetAll()
         {
-            var response = await _creatorIdService.GetAll();
+            var response = await _cartItemService.GetAll();
             Log.Information("Response => {@response}", response);
             return response.IsSuccess ? Ok(response) : BadRequest(response);
         }
 
         [HttpGet("GetById")]
-        public async Task<IActionResult> GetById(string id)
+        public async Task<IActionResult> GetById(int id)
         {
-            var response = await _creatorIdService.Get(id);
+            var response = await _cartItemService.Get(id);
             Log.Information("Response => {@response}", response);
             return response.IsSuccess ? Ok(response) : BadRequest(response);
         }
 
         [HttpPost("Create")]
-        public async Task<IActionResult> Create(CreatorIdDto creatorIdDto)
+        public async Task<IActionResult> Create(CartItemCreateDto cartItemCreateDto)
         {
-            var response = await _creatorIdService.Create(creatorIdDto);
+            var response = await _cartItemService.Create(cartItemCreateDto);
             Log.Information("Response => {@response}", response);
             return response.IsSuccess ? Ok(response) : BadRequest(response);
         }
 
         [HttpDelete("Delete")]
-        public async Task<IActionResult> Delete(string id)
+        public async Task<IActionResult> Delete(int id)
         {
-            var response = await _creatorIdService.Delete(id);
+            var response = await _cartItemService.Delete(id);
             Log.Information("Response => {@response}", response);
             return response.IsSuccess ? Ok(response) : BadRequest(response);
         }
 
         [HttpPut("Update")]
-        public async Task<IActionResult> Update(CreatorIdDto creatorIdDto)
+        public async Task<IActionResult> Update(CartItemUpdateDto cartItemUpdateDto)
         {
-            var response = await _creatorIdService.Update(creatorIdDto);
+            var response = await _cartItemService.Update(cartItemUpdateDto);
             Log.Information("Response => {@response}", response);
             return response.IsSuccess ? Ok(response) : BadRequest(response);
         }

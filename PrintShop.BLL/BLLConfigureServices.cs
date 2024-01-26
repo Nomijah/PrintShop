@@ -21,8 +21,8 @@ namespace PrintShop.BLL
             services.AddScoped<IPictureService, PictureService>();
             services.AddScoped<IBlobService, BlobService>();
             services.AddScoped<ICreatorIdService, CreatorIdService>();
+            services.AddScoped<ICartItemService, CartItemService>();
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-
 
             services.AddValidatorsFromAssemblyContaining<PasswordUpdateValidator>();
 
