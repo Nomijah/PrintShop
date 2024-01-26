@@ -20,6 +20,7 @@ namespace PrintShop.BLL
             services.AddScoped<IVariantService, VariantService>();
             services.AddScoped<IPictureService, PictureService>();
             services.AddScoped<IBlobService, BlobService>();
+            services.AddScoped<ICreatorIdService, CreatorIdService>();
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
 

@@ -1,5 +1,4 @@
 ﻿using PrintShop.GlobalData.Models;
-using PrintShop.GlobalData.Models.DTOs.GenericDtos;
 
 namespace PrintShop.DAL.Repositories.Interfaces
 {
@@ -7,5 +6,7 @@ namespace PrintShop.DAL.Repositories.Interfaces
     {
         Task<Picture?> GetByIdAsync(Guid id);
         Task<Picture?> GetBySKUAsync(string skuPart);
+        Task<ICollection<string>> GetAllIDs();
+        Task<ICollection<string>> GetAllIDs(string creeatorId);
     }
 }

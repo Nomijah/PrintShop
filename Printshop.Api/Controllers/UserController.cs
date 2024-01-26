@@ -62,5 +62,21 @@ namespace PrintShopAPI.Controllers
             Log.Information("Response => {@response}", response);
             return response.IsSuccess ? Ok(response) : BadRequest(response);
         }
+
+        [HttpPut("AddUserToRole")]
+        public async Task<IActionResult> AddRoleToUser(string userId, string role)
+        {
+            var response = await _userService.AddUserToRole(userId, role);
+            Log.Information("Response => {@response}", response);
+            return response.IsSuccess ? Ok(response) : BadRequest(response);
+        }
+
+        [HttpPut("RemoveUserFromRole")]
+        public async Task<IActionResult> RemoveUserFromRole(string userId, string role)
+        {
+            var response = await _userService.RemoveUserFromRole(userId, role);
+            Log.Information("Response => {@response}", response);
+            return response.IsSuccess ? Ok(response) : BadRequest(response);
+        }
     }
 }

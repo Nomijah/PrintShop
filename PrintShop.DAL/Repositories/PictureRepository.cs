@@ -14,6 +14,20 @@ namespace PrintShop.DAL.Repositories
             _appDbContext = appDbContext;
         }
 
+        public async Task<ICollection<string>> GetAllIDs()
+        {
+            return await _appDbContext.Pictures
+                .Select(p => p.Id.ToString())
+                .ToListAsync();
+        }
+        public async Task<ICollection<string>> GetAllIDs(string creatorId)
+        {
+            return await _appDbContext.Pictures
+                .Where(p => p.CreatorId == creatorId)
+                .Select(p => p.Id.ToString())
+                .ToListAsync();
+        }
+
         public async Task<Picture?> GetByIdAsync(Guid id)
         {
             return await _appDbContext.Pictures.FindAsync(id);
