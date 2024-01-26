@@ -10,6 +10,7 @@ using PrintShop.GlobalData.Models.DTOs.UserDTOs;
 using Serilog;
 using PrintShop.Api.Middlewares;
 using Azure.Storage.Blobs;
+using Microsoft.AspNetCore.Http.Features;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -36,6 +37,14 @@ builder.Services.AddAuthentication(options =>
 // Add config for requiring email confirmation
 builder.Services.Configure<IdentityOptions>(
     options => options.SignIn.RequireConfirmedEmail = true);
+
+// Increase maximum size of HttpRequests to be able to upload large image files.
+builder.Services.Configure<FormOptions>(x =>
+{
+    x.ValueLengthLimit = int.MaxValue;
+    x.MultipartBodyLengthLimit = int.MaxValue; // if don't set default value is: 128 MB
+    x.MultipartHeadersLengthLimit = int.MaxValue;
+});
 
 // Configuration from DAL and BLL
 builder.Services.DbServicesDAL(builder.Configuration).DbServicesBLL(builder.Configuration);

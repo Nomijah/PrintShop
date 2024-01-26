@@ -12,6 +12,7 @@ namespace PrintShop.BLL.Services.Interfaces
         public Task<ApiResponse> Login(UserLoginDto userLoginDto);
         public Task<ApiResponse> GetAll();
         public Task<ApiResponse> GetAllWithRoles();
-
+        public Task<ApiResponse> AddUserToRole(string userId, string roleName);
+        public Task<ApiResponse> RemoveUserFromRole(string userId, string roleName);
     }
 }

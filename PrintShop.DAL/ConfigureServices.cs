@@ -23,6 +23,7 @@ namespace PrintShop.DAL
             services.AddScoped<IRepository<Material>, GeneralRepository<Material>>();
             services.AddScoped<IRepository<Picture>, GeneralRepository<Picture>>();
             services.AddScoped<IRepository<Variant>, GeneralRepository<Variant>>();
+            services.AddScoped<IRepository<CreatorId>, GeneralRepository<CreatorId>>();
             services.AddScoped<IPictureRepository, PictureRepository>();
             services.AddScoped<IVariantRepository, VariantRepository>();
             services.AddScoped<IUserRepository, UserRepository>();

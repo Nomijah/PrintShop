@@ -37,6 +37,11 @@ namespace PrintShop.DAL.Repositories
             return await _dbSet.FindAsync(id);
         }
 
+        public async Task<TEntity> GetByStringIdAsync(string id)
+        {
+            return await _dbSet.FindAsync(id);
+        }
+
         public async Task UpdateAsync(TEntity entity)
         {
             _dbSet.Update(entity);

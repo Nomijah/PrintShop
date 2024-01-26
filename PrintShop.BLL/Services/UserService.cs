@@ -21,15 +21,18 @@ namespace PrintShop.BLL.Services
     public class UserService : IUserService
     {
         private readonly UserManager<User> _userManager;
+        private readonly RoleManager<Role> _roleManager;
         private readonly IEmailService _emailService;
         private readonly IUrlHelperFactory _urlHelperFactory;
         private readonly IConfiguration _configuration;
         private readonly IUserRepository _userRepo;
 
-        public UserService(UserManager<User> userManager, IUserRepository userRepo,
-            IEmailService emailService, IUrlHelperFactory urlHelperFactory, IConfiguration configuration)
+        public UserService(UserManager<User> userManager, RoleManager<Role> roleManager,
+            IUserRepository userRepo, IEmailService emailService, 
+            IUrlHelperFactory urlHelperFactory, IConfiguration configuration)
         {
             _userManager = userManager;
+            _roleManager = roleManager;
             _emailService = emailService;
             _urlHelperFactory = urlHelperFactory;
             _configuration = configuration;
@@ -297,6 +300,84 @@ namespace PrintShop.BLL.Services
                 response.StatusCode = StatusCodes.Status200OK;
                 response.Result = result;
                 return response;
+            }
+            return response;
+        }
+
+        public async Task<ApiResponse> AddUserToRole(string userId, string roleName)
+        {
+            ApiResponse response = new ApiResponse()
+            {
+                IsSuccess = false,
+                StatusCode = StatusCodes.Status400BadRequest
+            };
+
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null)
+            {
+                response.ErrorMessages.Add("User not found.");
+                response.StatusCode = StatusCodes.Status404NotFound;
+                return response;
+            }
+
+            var role = await _roleManager.FindByNameAsync(roleName);
+            if (role == null)
+            {
+                response.ErrorMessages.Add("Role not found.");
+                response.StatusCode = StatusCodes.Status404NotFound;
+                return response;
+            }
+
+            var result = await _userManager.AddToRoleAsync(user, roleName);
+            if (result.Succeeded)
+            {
+                response.IsSuccess = true;
+                response.StatusCode = StatusCodes.Status200OK;
+                return response;
+            }
+
+            foreach (var item in result.Errors)
+            {
+                response.ErrorMessages.Add(item.Description);
+            }
+            return response;
+        }
+
+        public async Task<ApiResponse> RemoveUserFromRole(string userId, string roleName)
+        {
+            ApiResponse response = new ApiResponse()
+            {
+                IsSuccess = false,
+                StatusCode = StatusCodes.Status400BadRequest
+            };
+
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null)
+            {
+                response.ErrorMessages.Add("User not found.");
+                response.StatusCode = StatusCodes.Status404NotFound;
+                return response;
+            }
+
+            var role = await _roleManager.FindByNameAsync(roleName);
+            if (role == null)
+            {
+                response.ErrorMessages.Add("Role not found.");
+                response.StatusCode = StatusCodes.Status404NotFound;
+                return response;
+            }
+
+            var result = await _userManager.RemoveFromRoleAsync(user, roleName);
+            if (result.Succeeded)
+            {
+                response.IsSuccess = true;
+                response.StatusCode = StatusCodes.Status200OK;
+                return response;
+            }
+
+            foreach (var item in result.Errors)
+            {
+                response.ErrorMessages.Add(item.Description);
             }
             return response;
         }

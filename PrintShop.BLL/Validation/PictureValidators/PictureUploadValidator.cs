@@ -8,7 +8,7 @@ namespace PrintShop.BLL.Validation.PictureValidators
         public PictureUploadValidator() 
         {
             RuleFor(p => p.Title).NotEmpty().WithMessage("Image title must not be empty.");
-            RuleFor(p => p.CreatorIdentifier).NotEmpty().WithMessage("CreatorIdentifier must not be empty.");
+            RuleFor(p => p.CreatorId).NotEmpty().WithMessage("CreatorId must not be empty.");
             RuleFor(p => p.File).NotEmpty().WithMessage("No file added.");
             RuleFor(p => p.File).Must(p => p.FileName.GetContentType() == "image/tiff" || p.FileName.GetContentType() == "image/jpeg");
         }

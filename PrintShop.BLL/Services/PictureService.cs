@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.Extensions.Configuration;
 using PrintShop.BLL.Services.Interfaces;
 using PrintShop.BLL.Validation.PictureValidators;
@@ -16,15 +17,17 @@ namespace PrintShop.BLL.Services
         private readonly IPictureRepository _pictureRepo;
         private readonly IBlobService _blobService;
         private readonly IConfiguration _configuration;
+        private readonly IRepository<CreatorId> _creatorIdRepo;
 
         public PictureService(IRepository<Picture> genericPictureRepo,
-            IPictureRepository pictureRepo, IBlobService blobService, 
-            IConfiguration configuration)
+            IPictureRepository pictureRepo, IBlobService blobService,
+            IConfiguration configuration, IRepository<CreatorId> creatorIdRepo)
         {
             _genericPictureRepo = genericPictureRepo;
             _pictureRepo = pictureRepo;
             _blobService = blobService;
             _configuration = configuration;
+            _creatorIdRepo = creatorIdRepo;
         }
         public async Task<ApiResponse> Upload(PictureUploadDto pictureUploadDto)
         {
@@ -45,13 +48,21 @@ namespace PrintShop.BLL.Services
                 return response;
             }
 
+            var creatorIdCheck = await _creatorIdRepo.GetByStringIdAsync(pictureUploadDto.CreatorId);
+            if (creatorIdCheck == null)
+            {
+                response.ErrorMessages.Add("The provided CreatorId does not exist.");
+                response.StatusCode = StatusCodes.Status404NotFound;
+                return response;
+            }
+
             var skuPart = await GenerateUniqueSKUPart();
 
             var pictureToAdd = new Picture()
             {
                 Id = Guid.NewGuid(),
                 SKUPart = skuPart,
-                CreatorId = pictureUploadDto.CreatorIdentifier,
+                CreatorId = pictureUploadDto.CreatorId,
                 Title = pictureUploadDto.Title,
                 Description = pictureUploadDto.Description,
                 BasePrice = pictureUploadDto.BasePrice,
@@ -60,7 +71,7 @@ namespace PrintShop.BLL.Services
 
             using (var image = Image.FromStream(pictureUploadDto.File.OpenReadStream()))
             {
-                if (image.Height < 1500 ||  image.Width < 1500)
+                if (image.Height < 1500 || image.Width < 1500)
                 {
                     response.ErrorMessages.Add("Image resolution too low.");
                     return response;
@@ -68,15 +79,15 @@ namespace PrintShop.BLL.Services
                 pictureToAdd.Height = image.Height;
                 pictureToAdd.Width = image.Width;
                 var scaledImageSmall = ImageProcessing.ImageToByte(ImageProcessing.ResizeImage(image, 200));
-                var result1 = _blobService.UploadImageBytesAsync(pictureToAdd.Id.ToString()
+                var result1 = await _blobService.UploadImageBytesAsync(pictureToAdd.Id.ToString()
                     + _configuration.GetSection("GeneratedFileNameExtensions:Small").Value,
                     scaledImageSmall);
                 //var scaledImageLarge = ImageProcessing.ImageToByte(ImageProcessing.ResizeImage(image, 1024));
                 //var largeWithWatermark = ImageProcessing.Watermark(ImageProcessing.BytesToStream(scaledImageLarge));
-                var scaledImageLargeWithWatermark = ImageProcessing.WaterMarkTest(
+                var scaledImageLargeWithWatermark = ImageProcessing.WaterMark(
                     ImageProcessing.ResizeImage(image, 1024),
                     _configuration.GetSection("WatermarkText").Value);
-                var result2 = _blobService.UploadImageBytesAsync(pictureToAdd.Id.ToString()
+                var result2 = await _blobService.UploadImageBytesAsync(pictureToAdd.Id.ToString()
                     + _configuration.GetSection("GeneratedFileNameExtensions:Large").Value,
                     scaledImageLargeWithWatermark);
 
@@ -94,7 +105,7 @@ namespace PrintShop.BLL.Services
             //else
             //    fileType = ".jpg";
 
-            var blobData = _blobService.UploadSingleFileAsync(pictureUploadDto.File, pictureToAdd.Id.ToString());
+            var blobData = await _blobService.UploadSingleFileAsync(pictureUploadDto.File, pictureToAdd.Id.ToString());
 
             if (blobData == null)
             {
@@ -132,7 +143,7 @@ namespace PrintShop.BLL.Services
             if (deleteBlobResult.Item1 == false)
             {
                 response.ErrorMessages.Add(deleteBlobResult.Item2);
-                response.StatusCode= StatusCodes.Status404NotFound;
+                response.StatusCode = StatusCodes.Status404NotFound;
                 return response;
             }
 
@@ -143,9 +154,18 @@ namespace PrintShop.BLL.Services
             return response;
         }
 
-        public Task<ApiResponse> GetAll()
+        public async Task<ApiResponse> GetAll()
         {
-            throw new NotImplementedException();
+            ApiResponse response = new ApiResponse()
+            {
+                IsSuccess = false,
+                StatusCode = StatusCodes.Status400BadRequest
+            };
+
+            response.Result = await _genericPictureRepo.GetAllAsync();
+            response.IsSuccess = true;
+            response.StatusCode = StatusCodes.Status200OK;
+            return response;
         }
 
         public async Task<ApiResponse> Get(Guid id)
@@ -211,6 +231,78 @@ namespace PrintShop.BLL.Services
                 }
             } while (!unique);
             return "PI" + result.ToString("D4");
+        }
+
+        public async Task<ApiResponse> GetAllIDs()
+        {
+            ApiResponse response = new ApiResponse()
+            {
+                IsSuccess = false,
+                StatusCode = StatusCodes.Status400BadRequest
+            };
+
+            response.Result = await _pictureRepo.GetAllIDs();
+            response.IsSuccess = true;
+            response.StatusCode = StatusCodes.Status200OK;
+            return response;
+        }
+        public async Task<ApiResponse> GetAllIDs(string creatorId)
+        {
+            ApiResponse response = new ApiResponse()
+            {
+                IsSuccess = false,
+                StatusCode = StatusCodes.Status400BadRequest
+            };
+
+            response.Result = await _pictureRepo.GetAllIDs(creatorId);
+            response.IsSuccess = true;
+            response.StatusCode = StatusCodes.Status200OK;
+            return response;
+        }
+
+        public async Task<ApiResponse> DeleteMultiple(ICollection<string> ids)
+        {
+            ApiResponse response = new ApiResponse()
+            {
+                IsSuccess = false,
+                StatusCode = StatusCodes.Status400BadRequest
+            };
+
+            var pictureList = new List<Picture>();
+            foreach (string id in ids)
+            {
+                var pictureToDelete = await _pictureRepo.GetByIdAsync(new Guid(id));
+                if (pictureToDelete == null)
+                {
+                    response.ErrorMessages.Add($"Picture with id: {id}, not found.");
+                }
+                else
+                {
+                    pictureList.Add(pictureToDelete);
+                }
+
+                var deleteBlobResult = await _blobService.DeletePictureAsync(id);
+                if (deleteBlobResult.Item1 == false)
+                {
+                    response.ErrorMessages.Add(deleteBlobResult.Item2);
+                }
+            }
+
+            foreach (Picture picture in pictureList)
+            {
+                await _genericPictureRepo.DeleteAsync(picture);
+            }
+
+            if (response.ErrorMessages.Count > 0)
+            {
+                response.StatusCode = StatusCodes.Status404NotFound;
+                return response;
+            }
+
+            response.IsSuccess = true;
+            response.StatusCode = StatusCodes.Status200OK;
+            return response;
+
         }
     }
 }

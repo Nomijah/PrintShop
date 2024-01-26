@@ -41,7 +41,7 @@ namespace PrintShop.BLL
             }
         }
 
-        public static byte[] WaterMarkTest(Image image, string watermarkText)
+        public static byte[] WaterMark(Image image, string watermarkText)
         {
             using (Bitmap bitmap = new Bitmap(image))
             {
